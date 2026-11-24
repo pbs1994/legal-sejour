@@ -6,21 +6,22 @@ import FormSection from '../../components/FormSection.astro';
 import { SITE, telHref } from '../../data/site';
 
 const how = [
-  { t: 'Lecture de la décision', d: 'Nature de la mesure, délai applicable, date limite exacte.' },
-  { t: 'Réunion des preuves', d: 'Présence en France, vie familiale, travail, santé, intégration.' },
-  { t: 'Constitution du dossier', d: 'Pièces classées, traduites, prêtes à être produites.' },
-  { t: 'Suivi jusqu’à l’audience', d: 'Orientation vers un avocat lorsque la représentation l’exige.' },
+  { t: 'Analyse de la décision', d: 'Nature de la mesure, délai applicable, arguments à soulever.' },
+  { t: 'Rédaction du recours', d: 'Nous rédigeons votre requête devant le tribunal administratif.' },
+  { t: 'Pièces et dépôt', d: 'Preuves rassemblées, classées, déposées dans le délai.' },
+  { t: 'Suivi jusqu’au jugement', d: 'Mémoires complémentaires, préparation de l’audience.' },
 ];
 const keep = ['La décision et l’enveloppe de notification', 'La date exacte de remise ou de réception', 'Toute preuve de votre présence et de vos attaches en France'];
 const cases = ['Refus de titre de séjour avec OQTF', 'OQTF après rejet d’une demande d’asile', 'OQTF à la suite d’un contrôle', 'Interdiction de retour (IRTF)', 'Assignation à résidence', 'Placement en rétention'];
 const faq = [
   { q: 'Le recours suspend-il l’OQTF ?', a: 'Le recours devant le tribunal administratif empêche en principe l’exécution de la mesure tant que le juge n’a pas statué. D’où l’importance de le former dans le délai.' },
   { q: 'Le délai est dépassé. Est-ce trop tard ?', a: 'Pas toujours. Une erreur dans la notification ou un changement de situation peut ouvrir d’autres voies. Contactez-nous pour vérifier.' },
-  { q: 'Faut-il un avocat ?', a: 'Il n’est pas obligatoire devant le tribunal administratif pour une OQTF, mais il est vivement recommandé. Nous vous orientons vers un avocat lorsque votre situation l’exige.' },
+  { q: 'Faut-il un avocat ?', a: 'Non. Devant le tribunal administratif, le recours contre une OQTF peut être présenté sans avocat. Nous rédigeons votre requête, réunissons les pièces et préparons l’audience avec vous.' },
+  { q: 'Combien de temps pour rédiger le recours ?', a: 'Dans les délais de votre décision, y compris en 48 heures. Les dossiers OQTF sont traités en priorité.' },
   { q: 'Que dois-je apporter au premier échange ?', a: 'La décision, l’enveloppe, votre titre ou récépissé s’il existe, et tout document prouvant votre vie en France.' },
 ];
 ---
-<Base title="Contestation d’OQTF — agir dans les délais" description="Vous avez reçu une OQTF ? Le délai de recours peut être de 30 jours, 7 jours ou 48 heures. Accompagnement immédiat pour constituer votre dossier.">
+<Base title="Contestation d’OQTF — agir dans les délais" description="Vous avez reçu une OQTF ? Nous rédigeons votre recours devant le tribunal administratif et le déposons dans le délai : 30 jours, 7 jours ou 48 heures.">
   <section class="hero">
     <div class="wrap">
       <nav class="crumbs light" aria-label="Fil d’Ariane"><a href="/">Accueil</a><span aria-hidden="true">/</span><a href="/services/">Services</a><span aria-hidden="true">/</span><span>Contestation d’OQTF</span></nav>
@@ -28,7 +29,7 @@ const faq = [
         <div class="h-txt">
           <span class="tag">Priorité</span>
           <h1>Contestation d’OQTF.</h1>
-          <p class="sub">Une OQTF n’est pas une fin. <span>Le délai, si.</span></p>
+          <p class="sub">Une OQTF n’est pas une fin. <span>Le délai, si.</span><br />Nous rédigeons votre recours et le déposons dans les temps.</p>
           <div class="actions">
             <a href="#formulaire" class="btn btn--urgent">Être rappelé en priorité <span class="arrow">→</span></a>
             {SITE.phone
@@ -45,7 +46,7 @@ const faq = [
     <div class="wrap">
       <div class="head reveal">
         <span class="eyebrow">Notre intervention</span>
-        <h2>Vite. Méthodiquement.</h2>
+        <h2>Votre recours, rédigé et déposé.</h2>
       </div>
       <ol class="steps reveal">
         {how.map((s, i) => <li><span class="n">0{i + 1}</span><h3>{s.t}</h3><p>{s.d}</p></li>)}
