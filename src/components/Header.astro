@@ -102,7 +102,10 @@ const cols = GROUPS.map((g) => ({ ...g, items: inGroup(g.id).filter((s) => s.slu
 </script>
 
 <style>
-  .hdr { position: sticky; top: 0; z-index: 50; background: rgba(255,255,255,.92); backdrop-filter: saturate(1.4) blur(14px); border-bottom: 1px solid transparent; transition: border-color .2s; }
+  /* Le flou est sur un pseudo-élément : un backdrop-filter sur .hdr ferait de lui le bloc conteneur du menu mobile en position fixe (hauteur nulle). */
+  .hdr { position: sticky; top: 0; z-index: 50; border-bottom: 1px solid transparent; transition: border-color .2s; }
+  .hdr::before { content: ''; position: absolute; inset: 0; z-index: -1; background: rgba(255,255,255,.92); backdrop-filter: saturate(1.4) blur(14px); -webkit-backdrop-filter: saturate(1.4) blur(14px); }
+  .hdr:global(.m-open)::before { background: #fff; }
   .hdr:global(.scrolled), .hdr:global(.open) { border-color: var(--line); }
   .bar { display: flex; align-items: center; justify-content: space-between; gap: 2rem; height: 5.25rem; }
   .nav { display: flex; align-items: center; gap: 2.25rem; font-size: .98rem; }
