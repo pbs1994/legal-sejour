@@ -2,8 +2,8 @@
 export const SITE = {
   name: 'Légal Séjour',
   url: 'https://legal-sejour.fr',
-  // TODO: numéro professionnel. Laissé vide → le bouton téléphone est masqué.
-  phone: '', // ex. '01 23 45 67 89'
+  // Laissé vide → le bouton téléphone est masqué.
+  phone: '07 52 28 26 76',
   email: 'contact@legal-sejour.fr',
   area: 'Paris & Île-de-France',
   hours: 'Lun. — Ven. : 9h30 — 19h00',

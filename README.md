@@ -20,7 +20,7 @@ npm run build    # → dist/ (à téléverser tel quel)
 - Site impersonnel : aucun nom, aucune photo.
 
 ## À compléter avant mise en ligne
-- [ ] Téléphone (`SITE.phone`) — vide = bouton téléphone masqué
+- [x] Téléphone : 07 52 28 26 76
 - [ ] Mentions légales (`SITE.legal`) : raison sociale, SIREN, adresse, hébergeur
 - [ ] Vérifier l’adresse e-mail `contact@legal-sejour.fr` et l’envoi depuis `site@legal-sejour.fr`
 - [ ] Le formulaire nécessite un hébergement PHP (sur Vercel / Netlify il faut un autre endpoint)
