@@ -1,5 +1,6 @@
 ---
 import Base from '../../layouts/Base.astro';
+import PhoneBtn from '../../components/PhoneBtn.astro';
 import Steps from '../../components/Steps.astro';
 import Faq from '../../components/Faq.astro';
 import FormSection from '../../components/FormSection.astro';
@@ -28,7 +29,7 @@ const top = parent ?? s;
           <p class="lead">{s.lead}</p>
           <div class="actions">
             <a href="#formulaire" class="btn btn--primary">Parler à un référent <span class="arrow">→</span></a>
-            <a href="/prendre-rendez-vous/" class="btn btn--ghost">Prendre rendez-vous</a>
+            <PhoneBtn />
           </div>
         </div>
       </div>

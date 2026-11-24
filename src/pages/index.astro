@@ -1,5 +1,6 @@
 ---
 import Base from '../layouts/Base.astro';
+import PhoneBtn from '../components/PhoneBtn.astro';
 import Steps from '../components/Steps.astro';
 import Faq from '../components/Faq.astro';
 import FormSection from '../components/FormSection.astro';
@@ -44,7 +45,7 @@ const faq = [
         <p class="lead">Titre de séjour, naturalisation, visa. Et, quand chaque jour compte, la contestation d’une OQTF.</p>
         <div class="actions">
           <a href="/prendre-rendez-vous/" class="btn btn--primary">Prendre rendez-vous <span class="arrow">→</span></a>
-          <a href="#formulaire" class="btn btn--ghost">Parler à un référent</a>
+          <PhoneBtn />
         </div>
       </div>
       <a class="alert" href={OQTF.href}>
@@ -80,7 +81,7 @@ const faq = [
       <div class="reveal"><Delays /></div>
       <div class="actions reveal" style="margin-top:3rem">
         <a href={OQTF.href} class="btn btn--light">Comprendre la démarche <span class="arrow">→</span></a>
-        <a href={`${OQTF.href}#formulaire`} class="btn btn--outline-light">Être rappelé en priorité</a>
+        <PhoneBtn variant="outline-light" label="Urgence" />
       </div>
     </div>
   </section>

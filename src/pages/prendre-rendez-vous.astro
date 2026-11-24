@@ -1,6 +1,7 @@
 ---
 import Base from '../layouts/Base.astro';
 import LeadForm from '../components/LeadForm.astro';
+import PhoneBtn from '../components/PhoneBtn.astro';
 ---
 <Base title="Prendre rendez-vous — 1er RDV gratuit" description="Réservez votre premier rendez-vous gratuit de 20 minutes avec un référent, par téléphone ou en visio.">
   <section class="section rdv">
@@ -15,6 +16,7 @@ import LeadForm from '../components/LeadForm.astro';
           <li><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18"/></svg>Europe/Paris</li>
         </ul>
         <p class="small">Le créneau choisi est confirmé par e-mail ou par téléphone.</p>
+        <div><PhoneBtn /></div>
       </aside>
 
       <div class="box">

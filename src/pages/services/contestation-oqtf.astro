@@ -1,9 +1,10 @@
 ---
 import Base from '../../layouts/Base.astro';
+import PhoneBtn from '../../components/PhoneBtn.astro';
 import Delays from '../../components/Delays.astro';
 import Faq from '../../components/Faq.astro';
 import FormSection from '../../components/FormSection.astro';
-import { SITE, telHref } from '../../data/site';
+import { SITE } from '../../data/site';
 
 const how = [
   { t: 'Analyse de la décision', d: 'Nature de la mesure, délai applicable, arguments à soulever.' },
@@ -33,7 +34,7 @@ const faq = [
           <div class="actions">
             <a href="#formulaire" class="btn btn--urgent">Être rappelé en priorité <span class="arrow">→</span></a>
             {SITE.phone
-              ? <a href={telHref(SITE.phone)} class="btn btn--outline-light">{SITE.phone}</a>
+              ? <PhoneBtn variant="outline-light" />
               : <a href="/prendre-rendez-vous/" class="btn btn--outline-light">Prendre rendez-vous</a>}
           </div>
         </div>

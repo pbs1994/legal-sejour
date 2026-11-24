@@ -1,4 +1,5 @@
 ---
+import PhoneBtn from './PhoneBtn.astro';
 const { title = 'Parlons de votre situation.', text = 'Premier rendez-vous de 20 minutes, gratuit et sans engagement.' } = Astro.props;
 ---
 <section class="band">
@@ -9,6 +10,7 @@ const { title = 'Parlons de votre situation.', text = 'Premier rendez-vous de 20
     </div>
     <div class="actions">
       <a href="/prendre-rendez-vous/" class="btn btn--light">Prendre rendez-vous <span class="arrow">→</span></a>
+      <PhoneBtn variant="outline-light" />
     </div>
   </div>
 </section>

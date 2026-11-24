@@ -1,5 +1,6 @@
 ---
 import LeadForm from './LeadForm.astro';
+import PhoneBtn from './PhoneBtn.astro';
 const { service = '', oqtf = false, title = 'Parlons de votre situation.' } = Astro.props;
 ---
 <section class="section section--soft" id="formulaire">
@@ -12,6 +13,7 @@ const { service = '', oqtf = false, title = 'Parlons de votre situation.' } = As
           ? <><li>Rappel prioritaire</li><li>Recours rédigé et déposé dans le délai</li><li>Devis clair avant tout engagement</li></>
           : <><li><span>1<sup>er</sup> rendez-vous gratuit, 20 minutes</span></li><li>Par téléphone ou en visio</li><li>Devis clair avant tout engagement</li></>}
       </ul>
+      <div class="call"><p class="muted">{oqtf ? 'Urgence ? Appelez directement :' : 'Ou appelez-nous :'}</p><PhoneBtn variant={oqtf ? 'primary' : 'ghost'} /></div>
     </div>
     <div class="box reveal"><LeadForm service={service} oqtf={oqtf} /></div>
   </div>
@@ -19,6 +21,7 @@ const { service = '', oqtf = false, title = 'Parlons de votre situation.' } = As
 <style>
   .fs { display: grid; grid-template-columns: 1fr 1.35fr; gap: clamp(2.5rem, 6vw, 6rem); align-items: start; }
   .intro { display: grid; gap: 1.75rem; position: sticky; top: 7.5rem; }
+  .call { display: grid; gap: .75rem; justify-items: start; padding-top: 1.75rem; border-top: 1px solid var(--line); }
   .box { background: #fff; border-radius: calc(var(--radius) * 1.5); padding: clamp(1.5rem, 4vw, 3rem); box-shadow: 0 4px 24px -4px rgba(41,73,138,.08); }
   @media (max-width: 900px) { .fs { grid-template-columns: 1fr; } .intro { position: static; } }
 </style>

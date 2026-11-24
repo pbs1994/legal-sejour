@@ -48,6 +48,7 @@ const cols = GROUPS.map((g) => ({ ...g, items: inGroup(g.id).filter((s) => s.slu
       {SITE.phone && (
         <a href={telHref(SITE.phone)} class="ico" aria-label={`Appeler le ${SITE.phone}`}>
           <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 005 5L15 13l5 2v4a2 2 0 01-2 2A16 16 0 013 6a2 2 0 012-2" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
+          <span class="num">{SITE.phone}</span>
         </a>
       )}
       <button type="button" class="burger" aria-label="Menu" aria-expanded="false" aria-controls="mnav" data-burger><span></span><span></span></button>
@@ -135,7 +136,9 @@ const cols = GROUPS.map((g) => ({ ...g, items: inGroup(g.id).filter((s) => s.slu
   .rdv sup { font-size: .6em; }
   .rdv em { font-style: normal; color: var(--brand-2); font-size: 1.55rem; line-height: .8; position: relative; transform: rotate(-4deg); display: inline-block; }
   .rdv em::after { content: ''; position: absolute; left: 0; right: .2rem; bottom: -.15rem; height: 2px; border-radius: 2px; background: var(--brand-2); transform: rotate(-2deg); }
-  .ico { width: 2.9rem; height: 2.9rem; border-radius: 50%; border: 1px solid #cfe0ff; display: grid; place-items: center; color: var(--brand-2); transition: background .2s; }
+  .ico { height: 2.9rem; min-width: 2.9rem; padding: 0 1.1rem 0 .95rem; border-radius: 999px; border: 1px solid #cfe0ff; display: inline-flex; align-items: center; justify-content: center; gap: .55rem; color: var(--brand-2); font-weight: 500; font-size: .98rem; white-space: nowrap; transition: background .2s; }
+  .num { color: var(--ink); letter-spacing: .01em; }
+  @media (min-width: 1081px) and (max-width: 1260px) { .ico { padding: 0; width: 2.9rem; } .num { display: none; } }
   .ico:hover { background: var(--soft); }
   .burger { display: none; width: 2.9rem; height: 2.9rem; border: 0; background: none; cursor: pointer; position: relative; }
   .burger span { position: absolute; left: .7rem; right: .7rem; height: 1.6px; background: var(--ink); transition: transform .25s, top .25s; }
@@ -164,6 +167,6 @@ const cols = GROUPS.map((g) => ({ ...g, items: inGroup(g.id).filter((s) => s.slu
     .bar { gap: .75rem; }
     .rdv { padding: .4rem .5rem; font-size: .95rem; }
     .rdv em { font-size: 1.35rem; }
-    .ico { width: 2.6rem; height: 2.6rem; }
+    .ico { padding: 0; width: 2.6rem; min-width: 2.6rem; height: 2.6rem; } .num { display: none; }
   }
 </style>
