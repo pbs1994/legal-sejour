@@ -1,0 +1,147 @@
+---
+import Base from '../layouts/Base.astro';
+import LeadForm from '../components/LeadForm.astro';
+---
+<Base title="Prendre rendez-vous — 1er RDV gratuit" description="Réservez votre premier rendez-vous gratuit de 20 minutes avec un référent, par téléphone ou en visio.">
+  <section class="section rdv">
+    <div class="wrap grid">
+      <aside class="info">
+        <nav class="crumbs" aria-label="Fil d’Ariane"><a href="/">Accueil</a><span aria-hidden="true">/</span><span>Rendez-vous</span></nav>
+        <h1>1<sup>er</sup> rendez-vous <em class="script">gratuit</em></h1>
+        <p class="lead">avec un référent Légal Séjour.</p>
+        <ul class="meta">
+          <li><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>20 minutes</li>
+          <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7h12v10H3zM15 10l6-3v10l-6-3"/></svg>Téléphone ou visio</li>
+          <li><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18"/></svg>Europe/Paris</li>
+        </ul>
+        <p class="small">Le créneau choisi est confirmé par e-mail ou par téléphone.</p>
+      </aside>
+
+      <div class="box">
+        <LeadForm booking>
+          <fieldset slot="booking" class="pick" data-pick>
+            <legend class="sr-only">Choisissez une date et un horaire</legend>
+            <div class="cal-h">
+              <p class="month" data-month></p>
+              <div class="nav">
+                <button type="button" data-prev aria-label="Mois précédent">‹</button>
+                <button type="button" data-next aria-label="Mois suivant">›</button>
+              </div>
+            </div>
+            <div class="dow" aria-hidden="true"><span>LUN.</span><span>MAR.</span><span>MER.</span><span>JEU.</span><span>VEN.</span><span>SAM.</span><span>DIM.</span></div>
+            <div class="days" data-days></div>
+            <div class="slots" data-slots hidden>
+              <p class="slots-h" data-slots-h></p>
+              <div class="slots-g" data-slots-g></div>
+            </div>
+            <div class="mode">
+              <label><input type="radio" name="mode" value="Téléphone" checked /> <span>Téléphone</span></label>
+              <label><input type="radio" name="mode" value="Visio" /> <span>Visio</span></label>
+            </div>
+            <input type="hidden" name="slot" data-slot />
+          </fieldset>
+        </LeadForm>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<script>
+  const root = document.querySelector<HTMLElement>('[data-pick]')!;
+  const monthEl = root.querySelector<HTMLElement>('[data-month]')!;
+  const daysEl = root.querySelector<HTMLElement>('[data-days]')!;
+  const slotsBox = root.querySelector<HTMLElement>('[data-slots]')!;
+  const slotsH = root.querySelector<HTMLElement>('[data-slots-h]')!;
+  const slotsG = root.querySelector<HTMLElement>('[data-slots-g]')!;
+  const slotInput = root.querySelector<HTMLInputElement>('[data-slot]')!;
+  const today = new Date(); today.setHours(0, 0, 0, 0);
+  const max = new Date(today); max.setDate(max.getDate() + 60);
+  let view = new Date(today.getFullYear(), today.getMonth(), 1);
+  let picked: Date | null = null;
+  const fmtM = new Intl.DateTimeFormat('fr-FR', { month: 'long' });
+  const fmtD = new Intl.DateTimeFormat('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' });
+  const TIMES = ['09:30', '10:00', '10:30', '11:00', '11:30', '14:00', '14:30', '15:00', '15:30', '16:00', '16:30', '17:00', '17:30', '18:00'];
+
+  const open = (d: Date) => d > today && d <= max && d.getDay() !== 0 && d.getDay() !== 6;
+
+  function render() {
+    monthEl.innerHTML = `${fmtM.format(view)} <span>${view.getFullYear()}</span>`;
+    daysEl.innerHTML = '';
+    const lead = (view.getDay() + 6) % 7;
+    for (let i = 0; i < lead; i++) daysEl.append(document.createElement('span'));
+    const n = new Date(view.getFullYear(), view.getMonth() + 1, 0).getDate();
+    for (let i = 1; i <= n; i++) {
+      const d = new Date(view.getFullYear(), view.getMonth(), i);
+      const b = document.createElement('button');
+      b.type = 'button'; b.textContent = String(i);
+      b.disabled = !open(d);
+      b.setAttribute('aria-label', fmtD.format(d));
+      if (picked && +picked === +d) b.setAttribute('aria-pressed', 'true');
+      b.addEventListener('click', () => { picked = d; slotInput.value = ''; render(); renderSlots(); });
+      daysEl.append(b);
+    }
+    (root.querySelector('[data-prev]') as HTMLButtonElement).disabled = view <= new Date(today.getFullYear(), today.getMonth(), 1);
+    (root.querySelector('[data-next]') as HTMLButtonElement).disabled = view >= new Date(max.getFullYear(), max.getMonth(), 1);
+  }
+  function renderSlots() {
+    if (!picked) return;
+    slotsBox.hidden = false;
+    slotsH.textContent = fmtD.format(picked);
+    slotsG.innerHTML = '';
+    const times = picked.getDay() === 5 ? TIMES.filter((t) => t < '17:00') : TIMES;
+    times.forEach((t) => {
+      const b = document.createElement('button');
+      b.type = 'button'; b.textContent = t.replace(':', 'h');
+      b.addEventListener('click', () => {
+        slotsG.querySelectorAll('button').forEach((x) => x.removeAttribute('aria-pressed'));
+        b.setAttribute('aria-pressed', 'true');
+        slotInput.value = `${fmtD.format(picked!)} à ${t.replace(':', 'h')}`;
+      });
+      slotsG.append(b);
+    });
+  }
+  root.querySelector('[data-prev]')!.addEventListener('click', () => { view = new Date(view.getFullYear(), view.getMonth() - 1, 1); render(); });
+  root.querySelector('[data-next]')!.addEventListener('click', () => { view = new Date(view.getFullYear(), view.getMonth() + 1, 1); render(); });
+  render();
+</script>
+
+<style>
+  .rdv { background: var(--soft); }
+  .grid { display: grid; grid-template-columns: 1fr 1.35fr; gap: clamp(2.5rem, 6vw, 6rem); align-items: start; }
+  .info { display: grid; gap: 1.5rem; position: sticky; top: 7.5rem; }
+  .info .crumbs { margin-bottom: 0; }
+  h1 { font-size: clamp(2.4rem, 5vw, 4rem); }
+  h1 sup { font-size: .45em; }
+  h1 em { font-style: normal; color: var(--brand-2); font-size: 1.15em; }
+  .meta { display: grid; gap: 1rem; padding: 1.75rem 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); color: var(--ink); }
+  .meta li { display: flex; align-items: center; gap: .9rem; }
+  .meta svg { width: 1.3rem; height: 1.3rem; fill: none; stroke: var(--muted); stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+  .small { font-size: .88rem; color: var(--muted); }
+  .box { background: #fff; border-radius: calc(var(--radius) * 1.5); padding: clamp(1.5rem, 4vw, 3rem); box-shadow: 0 4px 24px -4px rgba(41,73,138,.08); }
+
+  .pick { border: 0; padding: 0 0 1.5rem; margin: 0 0 .5rem; border-bottom: 1px solid var(--line); display: grid; gap: 1rem; min-width: 0; }
+  .cal-h { display: flex; justify-content: space-between; align-items: center; }
+  .month { font-size: 1.3rem; color: var(--ink); font-weight: 500; text-transform: capitalize; }
+  .month :global(span) { color: var(--muted); font-weight: 350; }
+  .nav { display: flex; gap: .25rem; }
+  .nav button { width: 2.4rem; height: 2.4rem; border: 0; background: none; font-size: 1.5rem; color: var(--muted); cursor: pointer; border-radius: 50%; }
+  .nav button:hover:not(:disabled) { background: var(--soft); color: var(--ink); }
+  .nav button:disabled { opacity: .25; cursor: default; }
+  .dow, .days { display: grid; grid-template-columns: repeat(7, 1fr); gap: .4rem; text-align: center; }
+  .dow { font-size: .72rem; letter-spacing: .1em; color: var(--muted); padding: .75rem 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+  .days :global(button) { aspect-ratio: 1.15; border: 0; border-radius: .5rem; background: var(--soft); color: var(--ink); cursor: pointer; font-size: 1rem; transition: background .15s, color .15s; }
+  .days :global(button:hover:not(:disabled)) { background: #dfe8fb; }
+  .days :global(button:disabled) { background: none; color: #b6bcc8; cursor: default; }
+  .days :global(button[aria-pressed='true']), .slots-g :global(button[aria-pressed='true']) { background: var(--brand-2); color: #fff; }
+  .slots-h { font-size: .95rem; color: var(--ink); text-transform: capitalize; margin: .5rem 0 .75rem; }
+  .slots-g { display: grid; grid-template-columns: repeat(auto-fill, minmax(5rem, 1fr)); gap: .5rem; }
+  .slots-g :global(button) { padding: .7rem 0; border: 1px solid var(--line); border-radius: .5rem; background: #fff; cursor: pointer; font-size: .95rem; }
+  .slots-g :global(button:hover) { border-color: var(--brand-2); color: var(--brand-2); }
+  .mode { display: flex; gap: .6rem; margin-top: .5rem; }
+  .mode label { cursor: pointer; }
+  .mode input { position: absolute; opacity: 0; }
+  .mode span { display: inline-block; padding: .55rem 1.1rem; border: 1px solid var(--line); border-radius: 999px; font-size: .92rem; }
+  .mode input:checked + span { border-color: var(--brand); color: var(--brand); background: var(--soft); }
+  .mode input:focus-visible + span { outline: 2px solid var(--brand-2); outline-offset: 2px; }
+  @media (max-width: 900px) { .grid { grid-template-columns: 1fr; } .info { position: static; } }
+</style>

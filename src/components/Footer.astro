@@ -1,0 +1,71 @@
+---
+import Logo from './Logo.astro';
+import { SITE, telHref } from '../data/site';
+import { OQTF } from '../data/services';
+const year = new Date().getFullYear();
+---
+<footer class="ftr">
+  <div class="wrap top">
+    <div class="brand">
+      <Logo light />
+      <p>Accompagnement administratif en droit au séjour. Indépendant, discret, rigoureux.</p>
+      <a href="/prendre-rendez-vous/" class="btn btn--light"><span>1<sup>er</sup> RDV gratuit</span></a>
+    </div>
+    <div>
+      <p class="h">Services</p>
+      <ul>
+        <li><a href={OQTF.href} class="u">Contestation d’OQTF</a></li>
+        <li><a href="/services/titre-de-sejour/">Titre de séjour</a></li>
+        <li><a href="/services/naturalisation/">Naturalisation</a></li>
+        <li><a href="/services/visa/">Visa</a></li>
+        <li><a href="/services/regroupement-familial/">Regroupement familial</a></li>
+        <li><a href="/services/">Tous nos services</a></li>
+      </ul>
+    </div>
+    <div>
+      <p class="h">Repères</p>
+      <ul>
+        <li><a href="/pourquoi-nous/">Pourquoi nous ?</a></li>
+        <li><a href="/prendre-rendez-vous/">Prendre rendez-vous</a></li>
+        <li><a href="https://www.service-public.fr/particuliers/vosdroits/N110" rel="noopener" target="_blank">service-public.fr</a></li>
+        <li><a href="https://administration-etrangers-en-france.interieur.gouv.fr/" rel="noopener" target="_blank">ANEF</a></li>
+      </ul>
+    </div>
+    <div>
+      <p class="h">Contact</p>
+      <ul>
+        <li><a href={`mailto:${SITE.email}`}>{SITE.email}</a></li>
+        {SITE.phone && <li><a href={telHref(SITE.phone)}>{SITE.phone}</a></li>}
+        <li class="dim">{SITE.area}</li>
+        <li class="dim">{SITE.hours}</li>
+      </ul>
+    </div>
+  </div>
+  <div class="wrap note">
+    <p>{SITE.name} est un service privé d’accompagnement administratif. Il n’est ni un organisme public, ni un cabinet d’avocats. Les démarches officielles sont gratuites sur les sites de l’administration ; nos prestations sont payantes et font l’objet d’un devis préalable.</p>
+  </div>
+  <div class="wrap legal">
+    <span>© {year} {SITE.name}</span>
+    <nav aria-label="Liens légaux">
+      <a href="/mentions-legales/">Mentions légales</a>
+      <a href="/politique-de-confidentialite/">Confidentialité</a>
+    </nav>
+  </div>
+</footer>
+<style>
+  .ftr { background: var(--night); color: rgba(255,255,255,.72); font-size: .95rem; padding-top: clamp(4rem, 8vw, 6rem); }
+  .top { display: grid; grid-template-columns: 1.6fr 1fr 1fr 1.2fr; gap: 3rem; padding-bottom: 4rem; }
+  .brand { display: grid; gap: 1.5rem; align-content: start; justify-items: start; }
+  .brand p { max-width: 30ch; }
+  .h { color: #fff; font-size: .75rem; letter-spacing: .14em; text-transform: uppercase; margin-bottom: 1.25rem; font-weight: 500; }
+  ul { display: grid; gap: .7rem; }
+  a:hover { color: #fff; }
+  .u { color: #fff; }
+  .dim { color: rgba(255,255,255,.45); }
+  .note { border-top: 1px solid rgba(255,255,255,.1); padding-top: 2rem; padding-bottom: 2rem; font-size: .82rem; color: rgba(255,255,255,.45); }
+  .note p { max-width: 80ch; }
+  .legal { display: flex; justify-content: space-between; gap: 1rem; flex-wrap: wrap; padding-top: 1.5rem; padding-bottom: 2rem; border-top: 1px solid rgba(255,255,255,.1); font-size: .82rem; color: rgba(255,255,255,.45); }
+  .legal nav { display: flex; gap: 1.5rem; }
+  @media (max-width: 860px) { .top { grid-template-columns: 1fr 1fr; } .brand { grid-column: 1 / -1; } }
+  @media (max-width: 480px) { .top { grid-template-columns: 1fr; } }
+</style>

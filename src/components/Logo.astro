@@ -1,0 +1,15 @@
+---
+const { light = false } = Astro.props;
+---
+<a href="/" class:list={['logo', { light }]} aria-label="Légal Séjour — accueil">
+  <span class="l1">légal</span>
+  <span class="l2">séjour<i>.</i></span>
+</a>
+<style>
+  .logo { display: inline-grid; line-height: .82; font-weight: 650; letter-spacing: -0.045em; font-size: 1.7rem; }
+  .l1 { color: var(--brand); }
+  .l2 { color: #9aa3b2; }
+  .l2 i { font-style: normal; color: var(--accent); }
+  .light .l1 { color: #fff; }
+  .light .l2 { color: rgba(255,255,255,.55); }
+</style>

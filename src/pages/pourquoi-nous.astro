@@ -1,0 +1,45 @@
+---
+import Base from '../layouts/Base.astro';
+import Steps from '../components/Steps.astro';
+import CtaBand from '../components/CtaBand.astro';
+import { SITE } from '../data/site';
+const points = [
+  { t: 'Spécialisation', d: 'Le droit au séjour, et rien d’autre. Titres, nationalité, visas, éloignement.' },
+  { t: 'Réactivité', d: 'Les situations urgentes, OQTF en tête, sont traitées en priorité.' },
+  { t: 'Rigueur', d: 'Chaque pièce est vérifiée. Un dossier complet est un dossier mieux instruit.' },
+  { t: 'Discrétion', d: 'Vos informations restent strictement confidentielles.' },
+  { t: 'Transparence', d: 'Un devis clair, avant tout engagement. Pas de frais cachés.' },
+  { t: 'Langues', d: 'Accompagnement en français, anglais, russe et ukrainien.' },
+];
+---
+<Base title="Pourquoi nous ?" description={`${SITE.name} : spécialisation, réactivité, rigueur. Accompagnement administratif en droit au séjour.`}>
+  <section class="hero">
+    <div class="wrap">
+      <nav class="crumbs" aria-label="Fil d’Ariane"><a href="/">Accueil</a><span aria-hidden="true">/</span><span>Pourquoi nous ?</span></nav>
+      <h1>Un seul sujet.<br /><span class="b">Toute notre attention.</span></h1>
+    </div>
+  </section>
+  <section class="section" style="padding-top:0">
+    <div class="wrap grid-3 pts">
+      {points.map((p, i) => (
+        <div class="p reveal"><span>{String(i + 1).padStart(2, '0')}</span><h3>{p.t}</h3><p>{p.d}</p></div>
+      ))}
+    </div>
+  </section>
+  <Steps soft />
+  <section class="section">
+    <div class="wrap">
+      <p class="statement reveal">{SITE.name} est un service privé et indépendant d’accompagnement administratif. Nous ne sommes ni un organisme public, ni un cabinet d’avocats&nbsp;: lorsque votre situation exige une représentation devant le juge, nous vous le disons et vous orientons.</p>
+    </div>
+  </section>
+  <CtaBand />
+</Base>
+<style>
+  .hero { padding: clamp(3rem, 7vw, 5.5rem) 0 clamp(4rem, 8vw, 7rem); }
+  .b { color: var(--brand); }
+  .pts { row-gap: 4rem; column-gap: 3rem; }
+  .p { display: grid; gap: 1rem; padding-top: 2rem; border-top: 1px solid var(--ink); align-content: start; }
+  .p span { font-size: .85rem; color: var(--brand); letter-spacing: .08em; }
+  .p p { color: var(--muted); }
+  .statement { font-size: clamp(1.3rem, 2.2vw, 1.75rem); line-height: 1.45; color: var(--ink); font-weight: 300; max-width: 48rem; }
+</style>

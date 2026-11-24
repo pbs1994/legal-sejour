@@ -1,0 +1,25 @@
+---
+interface Props { items: { q: string; a: string }[]; title?: string }
+const { items, title = 'Questions fréquentes' } = Astro.props;
+---
+<section class="section">
+  <div class="wrap faq-grid">
+    <div class="reveal">
+      <span class="eyebrow">FAQ</span>
+      <h2 style="margin-top:1.25rem">{title}</h2>
+    </div>
+    <div class="faq reveal">
+      {items.map((f) => (
+        <details><summary>{f.q}</summary><p>{f.a}</p></details>
+      ))}
+    </div>
+  </div>
+</section>
+<script type="application/ld+json" set:html={JSON.stringify({
+  '@context': 'https://schema.org', '@type': 'FAQPage',
+  mainEntity: items.map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })),
+})} />
+<style>
+  .faq-grid { display: grid; grid-template-columns: 1fr 1.6fr; gap: clamp(2.5rem, 6vw, 6rem); }
+  @media (max-width: 860px) { .faq-grid { grid-template-columns: 1fr; } }
+</style>

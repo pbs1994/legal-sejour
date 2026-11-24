@@ -1,0 +1,36 @@
+---
+const { light = false } = Astro.props;
+const items = [
+  { n: '30', u: 'jours', d: 'OQTF avec délai de départ volontaire, le plus souvent après un refus de titre.' },
+  { n: '7', u: 'jours', d: 'OQTF sans délai de départ volontaire et certaines situations particulières.' },
+  { n: '48', u: 'heures', d: 'En cas de placement en rétention ou d’assignation à résidence.' },
+];
+---
+<div class:list={['delays', { light }]}>
+  {items.map((i) => (
+    <div class="d">
+      <p class="num">{i.n}<span>{i.u}</span></p>
+      <p class="txt">{i.d}</p>
+    </div>
+  ))}
+</div>
+<p class:list={['fine', { light }]}>Délais indicatifs. Le délai applicable est celui mentionné sur votre décision et court à compter de sa notification.</p>
+<style>
+  .delays { display: grid; grid-template-columns: repeat(3, 1fr); border-top: 1px solid rgba(255,255,255,.15); }
+  .d { padding: 2rem 2rem 0 0; display: grid; gap: 1rem; align-content: start; }
+  .d + .d { padding-left: 2rem; border-left: 1px solid rgba(255,255,255,.15); }
+  .num { font-size: clamp(3.5rem, 7vw, 6rem); line-height: .9; font-weight: 300; letter-spacing: -.04em; color: #fff; display: flex; align-items: baseline; gap: .6rem; }
+  .num span { font-size: 1rem; letter-spacing: .02em; font-weight: 400; color: rgba(255,255,255,.6); }
+  .txt { color: rgba(255,255,255,.7); font-size: .98rem; max-width: 30ch; }
+  .fine { margin-top: 2.5rem; font-size: .82rem; color: rgba(255,255,255,.45); }
+  .light { border-color: var(--line); }
+  .light .d + .d { border-color: var(--line); }
+  .light .num { color: var(--ink); }
+  .light .num span, .light .txt { color: var(--muted); }
+  .fine.light { color: var(--muted); }
+  @media (max-width: 760px) {
+    .delays { grid-template-columns: 1fr; }
+    .d, .d + .d { padding: 1.75rem 0; border-left: 0; border-bottom: 1px solid rgba(255,255,255,.15); }
+    .light .d { border-color: var(--line); }
+  }
+</style>

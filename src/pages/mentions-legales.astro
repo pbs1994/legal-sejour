@@ -1,0 +1,21 @@
+---
+import Base from '../layouts/Base.astro';
+import { SITE } from '../data/site';
+const L = SITE.legal;
+---
+<Base title="Mentions légales" description="Mentions légales du site legal-sejour.fr." noindex>
+  <section class="section">
+    <div class="wrap prose">
+      <h1>Mentions légales</h1>
+      <h2>Éditeur</h2>
+      <p>{L.company} — SIREN {L.siren}<br />{L.address}<br />Contact : <a href={`mailto:${SITE.email}`}>{SITE.email}</a></p>
+      <p>Directeur de la publication : {L.publisher}</p>
+      <h2>Hébergement</h2>
+      <p>{L.host}</p>
+      <h2>Nature du service</h2>
+      <p>{SITE.name} est un service privé d’accompagnement administratif. Il n’est ni un organisme public, ni un cabinet d’avocats, et ne délivre pas de consultation au sens de la loi n° 71-1130 du 31 décembre 1971. Les démarches officielles sont gratuites sur les sites de l’administration.</p>
+      <h2>Propriété intellectuelle</h2>
+      <p>L’ensemble des contenus de ce site est protégé. Toute reproduction sans autorisation est interdite.</p>
+    </div>
+  </section>
+</Base>

@@ -1,0 +1,23 @@
+---
+import Base from '../layouts/Base.astro';
+import { SITE } from '../data/site';
+---
+<Base title="Politique de confidentialité" description="Traitement des données personnelles sur legal-sejour.fr." noindex>
+  <section class="section">
+    <div class="wrap prose">
+      <h1>Politique de confidentialité</h1>
+      <h2>Données collectées</h2>
+      <p>Via les formulaires : nom, prénom, e-mail, téléphone, nature de la demande, créneau souhaité et, le cas échéant, message et date de notification d’une décision.</p>
+      <h2>Finalité</h2>
+      <p>Vous recontacter et organiser votre premier rendez-vous. Base légale : votre consentement et les mesures précontractuelles.</p>
+      <h2>Durée de conservation</h2>
+      <p>3 ans à compter du dernier contact, sauf relation contractuelle.</p>
+      <h2>Destinataires</h2>
+      <p>Uniquement {SITE.name}. Aucune donnée n’est vendue ni cédée.</p>
+      <h2>Vos droits</h2>
+      <p>Accès, rectification, effacement, opposition, limitation et portabilité : écrivez à <a href={`mailto:${SITE.email}`}>{SITE.email}</a>. Vous pouvez saisir la CNIL (cnil.fr).</p>
+      <h2>Cookies</h2>
+      <p>Ce site n’utilise aucun cookie publicitaire ni outil de mesure d’audience tiers.</p>
+    </div>
+  </section>
+</Base>

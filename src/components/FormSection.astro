@@ -1,0 +1,24 @@
+---
+import LeadForm from './LeadForm.astro';
+const { service = '', oqtf = false, title = 'Parlons de votre situation.' } = Astro.props;
+---
+<section class="section section--soft" id="formulaire">
+  <div class="wrap fs">
+    <div class="reveal intro">
+      <span class="eyebrow">{oqtf ? 'Urgence OQTF' : 'Premier contact'}</span>
+      <h2>{title}</h2>
+      <ul class="ticks">
+        {oqtf
+          ? <><li>Rappel prioritaire</li><li>Vérification immédiate du délai</li><li>Devis clair avant tout engagement</li></>
+          : <><li><span>1<sup>er</sup> rendez-vous gratuit, 20 minutes</span></li><li>Par téléphone ou en visio</li><li>Devis clair avant tout engagement</li></>}
+      </ul>
+    </div>
+    <div class="box reveal"><LeadForm service={service} oqtf={oqtf} /></div>
+  </div>
+</section>
+<style>
+  .fs { display: grid; grid-template-columns: 1fr 1.35fr; gap: clamp(2.5rem, 6vw, 6rem); align-items: start; }
+  .intro { display: grid; gap: 1.75rem; position: sticky; top: 7.5rem; }
+  .box { background: #fff; border-radius: calc(var(--radius) * 1.5); padding: clamp(1.5rem, 4vw, 3rem); box-shadow: 0 4px 24px -4px rgba(41,73,138,.08); }
+  @media (max-width: 900px) { .fs { grid-template-columns: 1fr; } .intro { position: static; } }
+</style>
