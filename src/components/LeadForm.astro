@@ -17,7 +17,7 @@ const options = [
 ];
 const selected = oqtf ? 'oqtf' : service;
 ---
-<form class:list={['lead', { dark }]} action="/api/contact.php" method="post" data-lead novalidate data-sending={F.sending} data-ok={F.ok} data-err={F.err}>
+<form class:list={['lead', { dark }]} action="/api/contact" method="post" data-lead novalidate data-sending={F.sending} data-ok={F.ok} data-err={F.err}>
   {booking && <slot name="booking" />}
   <div class="row">
     <div class="field"><label for="f-first">{F.first} *</label><input id="f-first" name="firstname" autocomplete="given-name" required /></div>

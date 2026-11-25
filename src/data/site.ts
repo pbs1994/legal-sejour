@@ -11,7 +11,7 @@ export const SITE = {
     address: '38 rue de Ménilmontant, 75020 Paris, France',
     ape: '8211Z',
     vat: 'TVA non applicable, art. 293 B du CGI',
-    host: '', // TODO: hébergeur (nom, adresse, téléphone) — obligatoire (LCEN art. 6)
+    host: 'Vercel Inc., 440 N Barranca Ave #4133, Covina, CA 91723, États-Unis — https://vercel.com/contact',
   },
 };
 

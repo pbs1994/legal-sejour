@@ -1,6 +1,0 @@
-<Files "config.php">
-  Require all denied
-</Files>
-<Files "leads.log">
-  Require all denied
-</Files>
