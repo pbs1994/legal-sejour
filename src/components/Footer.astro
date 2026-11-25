@@ -40,7 +40,7 @@ const year = new Date().getFullYear();
       <ul>
         {SITE.phone && <li><a href={telHref(SITE.phone)}>{SITE.phone}</a></li>}
         <li><a href={`mailto:${SITE.email}`}>{SITE.email}</a></li>
-        <li class="dim">{SITE.legal.address}</li>
+        <li class="dim">{F.area}</li>
         <li class="dim">{F.hours}</li>
       </ul>
     </div>
