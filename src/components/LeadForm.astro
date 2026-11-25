@@ -1,39 +1,52 @@
 ---
-import { SERVICES, OQTF } from '../data/services';
+import { services } from '../data/services';
+import { getLang, t } from '../i18n';
 interface Props { service?: string; oqtf?: boolean; booking?: boolean; dark?: boolean }
 const { service = '', oqtf = false, booking = false, dark = false } = Astro.props;
-const options = [OQTF.menu, ...SERVICES.filter((s) => !s.parent).map((s) => s.menu), 'Autre demande'];
-const selected = oqtf ? OQTF.menu : service;
+const lang = getLang(Astro.url);
+const T = t(lang);
+const F = T.form;
+const FR = t('fr');
+// value = libellé français (lisible dans l'e-mail reçu), texte = langue de la page
+const tops = services(lang).filter((s) => !s.parent);
+const topsFr = services('fr').filter((s) => !s.parent);
+const options = [
+  { v: FR.oqtfName, l: T.oqtfName, key: 'oqtf' },
+  ...tops.map((s, i) => ({ v: topsFr[i].menu, l: s.menu, key: s.slug })),
+  { v: FR.form.other, l: F.other, key: 'other' },
+];
+const selected = oqtf ? 'oqtf' : service;
 ---
-<form class:list={['lead', { dark }]} action="/api/contact.php" method="post" data-lead novalidate>
+<form class:list={['lead', { dark }]} action="/api/contact.php" method="post" data-lead novalidate data-sending={F.sending} data-ok={F.ok} data-err={F.err}>
   {booking && <slot name="booking" />}
   <div class="row">
-    <div class="field"><label for="f-first">Prénom *</label><input id="f-first" name="firstname" autocomplete="given-name" required /></div>
-    <div class="field"><label for="f-last">Nom *</label><input id="f-last" name="lastname" autocomplete="family-name" required /></div>
+    <div class="field"><label for="f-first">{F.first} *</label><input id="f-first" name="firstname" autocomplete="given-name" required /></div>
+    <div class="field"><label for="f-last">{F.last} *</label><input id="f-last" name="lastname" autocomplete="family-name" required /></div>
   </div>
   <div class="row">
-    <div class="field"><label for="f-email">E-mail *</label><input id="f-email" name="email" type="email" autocomplete="email" required /></div>
-    <div class="field"><label for="f-phone">Téléphone *</label><input id="f-phone" name="phone" type="tel" autocomplete="tel" required /></div>
+    <div class="field"><label for="f-email">{F.email} *</label><input id="f-email" name="email" type="email" autocomplete="email" required /></div>
+    <div class="field"><label for="f-phone">{F.phone} *</label><input id="f-phone" name="phone" type="tel" autocomplete="tel" required /></div>
   </div>
   <div class="row">
     <div class="field">
-      <label for="f-service">Votre demande</label>
+      <label for="f-service">{F.request}</label>
       <select id="f-service" name="service">
-        {!selected && <option value="" selected disabled>Sélectionnez…</option>}
-        {options.map((o) => <option selected={o === selected}>{o}</option>)}
+        {!selected && <option value="" selected disabled>{F.select}</option>}
+        {options.map((o) => <option value={o.v} selected={o.key === selected}>{o.l}</option>)}
       </select>
     </div>
     {oqtf && (
-      <div class="field"><label for="f-notif">Date de notification de l’OQTF</label><input id="f-notif" name="notified" type="date" /></div>
+      <div class="field"><label for="f-notif">{F.notified}</label><input id="f-notif" name="notified" type="date" /></div>
     )}
   </div>
-  <div class="field"><label for="f-msg">Message <span class="opt">(facultatif)</span></label><textarea id="f-msg" name="message" rows="3"></textarea></div>
-  <div class="hp" aria-hidden="true"><label>Site web<input name="website" tabindex="-1" autocomplete="off" /></label></div>
+  <div class="field"><label for="f-msg">{F.message} <span class="opt">{F.optional}</span></label><textarea id="f-msg" name="message" rows="3"></textarea></div>
+  <div class="hp" aria-hidden="true"><label>{F.website}<input name="website" tabindex="-1" autocomplete="off" /></label></div>
   <input type="hidden" name="elapsed" value="0" />
   <input type="hidden" name="page" value={Astro.url.pathname} />
-  <label class="consent"><input type="checkbox" name="consent" value="1" required /> <span>J’accepte que mes données soient utilisées pour être recontacté(e). <a href="/politique-de-confidentialite/">En savoir plus</a></span></label>
+  <input type="hidden" name="lang" value={lang} />
+  <label class="consent"><input type="checkbox" name="consent" value="1" required /> <span>{F.consent} <a href="/politique-de-confidentialite/" hreflang="fr">{F.more}</a></span></label>
   <div class="submit">
-    <button class:list={['btn', oqtf ? 'btn--urgent' : 'btn--primary']} type="submit">{oqtf ? 'Être rappelé en priorité' : booking ? 'Confirmer ma demande' : 'Envoyer ma demande'} <span class="arrow">→</span></button>
+    <button class:list={['btn', oqtf ? 'btn--urgent' : 'btn--primary']} type="submit">{oqtf ? F.submitOqtf : booking ? F.submitBooking : F.submit} <span class="arrow">→</span></button>
     <p class="form-status" role="status" aria-live="polite"></p>
   </div>
 </form>
@@ -47,17 +60,17 @@ const selected = oqtf ? OQTF.menu : service;
       e.preventDefault();
       if (!form.reportValidity()) return;
       (form.elements.namedItem('elapsed') as HTMLInputElement).value = String(Math.round((Date.now() - t0) / 1000));
-      btn.disabled = true; status.dataset.state = ''; status.textContent = 'Envoi…';
+      btn.disabled = true; status.dataset.state = ''; status.textContent = form.dataset.sending!;
       try {
         const r = await fetch(form.action, { method: 'POST', body: new FormData(form) });
         const j = await r.json().catch(() => ({ ok: false }));
         if (!r.ok || !j.ok) throw new Error();
         status.dataset.state = 'ok';
-        status.textContent = 'Merci. Votre demande est bien reçue, nous vous recontactons rapidement.';
+        status.textContent = form.dataset.ok!;
         form.reset();
       } catch {
         status.dataset.state = 'err';
-        status.textContent = 'L’envoi a échoué. Écrivez-nous à contact@legal-sejour.fr.';
+        status.textContent = form.dataset.err!;
       } finally { btn.disabled = false; }
     });
   });

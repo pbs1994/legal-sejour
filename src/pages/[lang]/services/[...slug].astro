@@ -1,0 +1,7 @@
+---
+import Service from '../../../views/Service.astro';
+import { SLUGS } from '../../../data/services';
+import { OTHER_LANGS } from '../../../i18n';
+export const getStaticPaths = () => OTHER_LANGS.flatMap((lang) => SLUGS.map((slug) => ({ params: { lang, slug } })));
+---
+<Service slug={Astro.params.slug!} />

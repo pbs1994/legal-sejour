@@ -1,6 +1,7 @@
 ---
-import { STEPS } from '../data/site';
-const { title = 'Quatre étapes, un seul interlocuteur.', eyebrow = 'Processus', soft = false } = Astro.props;
+import { getLang, t } from '../i18n';
+const T = t(getLang(Astro.url)).steps;
+const { title = T.title, eyebrow = T.eyebrow, soft = false } = Astro.props;
 ---
 <section class:list={['section', { 'section--soft': soft }]}>
   <div class="wrap">
@@ -9,7 +10,7 @@ const { title = 'Quatre étapes, un seul interlocuteur.', eyebrow = 'Processus',
       <h2>{title}</h2>
     </div>
     <ol class="steps reveal">
-      {STEPS.map((s, i) => (
+      {T.items.map((s, i) => (
         <li><span class="n">0{i + 1}</span><h3>{s.t}</h3><p>{s.d}</p></li>
       ))}
     </ol>

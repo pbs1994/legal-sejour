@@ -1,7 +1,9 @@
 ---
+import { getLang, lp } from '../i18n';
 const { light = false } = Astro.props;
+const home = lp(getLang(Astro.url), '/');
 ---
-<a href="/" class:list={['logo', { light }]} aria-label="Légal Séjour — accueil">
+<a href={home} class:list={['logo', { light }]} aria-label="Légal Séjour">
   <span class="l1">légal</span>
   <span class="l2">séjour<i>.</i></span>
 </a>

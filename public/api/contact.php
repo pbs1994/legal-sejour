@@ -49,6 +49,7 @@ $lead = [
     'mode'      => $field('mode', 20),
     'message'   => $field('message', 4000),
     'page'      => $field('page', 200),
+    'lang'      => $field('lang', 5),
 ];
 
 if (($lead['firstname'] === '' && $lead['lastname'] === '') || ($lead['email'] === '' && $lead['phone'] === '')) out(false, 422);
@@ -70,7 +71,7 @@ $subject = $prefix . ($lead['slot'] ? 'Rendez-vous' : 'Demande') . ' — ' . $na
 $labels = [
     'firstname' => 'Prénom', 'lastname' => 'Nom', 'email' => 'E-mail', 'phone' => 'Téléphone',
     'service' => 'Demande', 'notified' => 'Notif. OQTF', 'slot' => 'Créneau', 'mode' => 'Mode',
-    'message' => 'Message', 'page' => 'Page',
+    'message' => 'Message', 'page' => 'Page', 'lang' => 'Langue',
 ];
 $body = '';
 foreach ($labels as $k => $label) {

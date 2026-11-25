@@ -1,54 +1,58 @@
 ---
 import Logo from './Logo.astro';
 import { SITE, telHref } from '../data/site';
-import { OQTF } from '../data/services';
+import { OQTF_PATH } from '../data/services';
+import { getLang, t, lp } from '../i18n';
+const lang = getLang(Astro.url);
+const T = t(lang);
+const F = T.footer;
 const year = new Date().getFullYear();
 ---
 <footer class="ftr">
   <div class="wrap top">
     <div class="brand">
       <Logo light />
-      <p>Accompagnement administratif en droit au séjour. Indépendant, discret, rigoureux.</p>
-      <a href="/prendre-rendez-vous/" class="btn btn--light"><span>1<sup>er</sup> RDV gratuit</span></a>
+      <p>{F.tagline}</p>
+      <a href={lp(lang, '/prendre-rendez-vous/')} class="btn btn--light"><span set:html={F.rdv} /></a>
     </div>
     <div>
-      <p class="h">Services</p>
+      <p class="h">{F.services}</p>
       <ul>
-        <li><a href={OQTF.href} class="u">Contestation d’OQTF</a></li>
-        <li><a href="/services/titre-de-sejour/">Titre de séjour</a></li>
-        <li><a href="/services/naturalisation/">Naturalisation</a></li>
-        <li><a href="/services/visa/">Visa</a></li>
-        <li><a href="/services/regroupement-familial/">Regroupement familial</a></li>
-        <li><a href="/services/">Tous nos services</a></li>
+        <li><a href={lp(lang, OQTF_PATH)} class="u">{T.oqtfName}</a></li>
+        <li><a href={lp(lang, '/services/titre-de-sejour/')}>{T.groups['titre-de-sejour']}</a></li>
+        <li><a href={lp(lang, '/services/naturalisation/')}>{T.groups.naturalisation}</a></li>
+        <li><a href={lp(lang, '/services/visa/')}>{T.groups.visa}</a></li>
+        <li><a href={lp(lang, '/services/regroupement-familial/')}>{T.home.rows[4].t}</a></li>
+        <li><a href={lp(lang, '/services/')}>{T.nav.all}</a></li>
       </ul>
     </div>
     <div>
-      <p class="h">Repères</p>
+      <p class="h">{F.refs}</p>
       <ul>
-        <li><a href="/pourquoi-nous/">Pourquoi nous ?</a></li>
-        <li><a href="/prendre-rendez-vous/">Prendre rendez-vous</a></li>
+        <li><a href={lp(lang, '/pourquoi-nous/')}>{T.nav.why}</a></li>
+        <li><a href={lp(lang, '/prendre-rendez-vous/')}>{F.book}</a></li>
         <li><a href="https://www.service-public.fr/particuliers/vosdroits/N110" rel="noopener" target="_blank">service-public.fr</a></li>
         <li><a href="https://administration-etrangers-en-france.interieur.gouv.fr/" rel="noopener" target="_blank">ANEF</a></li>
       </ul>
     </div>
     <div>
-      <p class="h">Contact</p>
+      <p class="h">{F.contact}</p>
       <ul>
-        <li><a href={`mailto:${SITE.email}`}>{SITE.email}</a></li>
         {SITE.phone && <li><a href={telHref(SITE.phone)}>{SITE.phone}</a></li>}
-        <li class="dim">{SITE.area}</li>
-        <li class="dim">{SITE.hours}</li>
+        <li><a href={`mailto:${SITE.email}`}>{SITE.email}</a></li>
+        <li class="dim">{SITE.legal.address}</li>
+        <li class="dim">{F.hours}</li>
       </ul>
     </div>
   </div>
   <div class="wrap note">
-    <p>{SITE.name} est un service privé d’accompagnement administratif. Il n’est ni un organisme public, ni un cabinet d’avocats. Les démarches officielles sont gratuites sur les sites de l’administration ; nos prestations sont payantes et font l’objet d’un devis préalable.</p>
+    <p>{F.note}</p>
   </div>
   <div class="wrap legal">
     <span>© {year} {SITE.name}</span>
-    <nav aria-label="Liens légaux">
-      <a href="/mentions-legales/">Mentions légales</a>
-      <a href="/politique-de-confidentialite/">Confidentialité</a>
+    <nav aria-label={F.legalNav}>
+      <a href="/mentions-legales/" hreflang="fr">{F.legal}</a>
+      <a href="/politique-de-confidentialite/" hreflang="fr">{F.privacy}</a>
     </nav>
   </div>
 </footer>

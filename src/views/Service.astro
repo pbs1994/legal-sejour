@@ -1,0 +1,121 @@
+---
+import Base from '../layouts/Base.astro';
+import Steps from '../components/Steps.astro';
+import Faq from '../components/Faq.astro';
+import FormSection from '../components/FormSection.astro';
+import PhoneBtn from '../components/PhoneBtn.astro';
+import { OQTF_PATH, bySlug, childrenOf } from '../data/services';
+import { getLang, t, lp } from '../i18n';
+interface Props { slug: string }
+const lang = getLang(Astro.url);
+const T = t(lang);
+const S = T.service;
+const s = bySlug(lang, Astro.props.slug)!;
+const parent = s.parent ? bySlug(lang, s.parent) : undefined;
+const kids = childrenOf(lang, s.slug);
+const siblings = parent ? childrenOf(lang, parent.slug).filter((x) => x.slug !== s.slug) : [];
+const top = parent ?? s;
+---
+<Base title={s.title} description={`${s.title} : ${s.lead} ${S.descSuffix}`}>
+  <section class="hero">
+    <div class="wrap">
+      <nav class="crumbs" aria-label={T.crumbs.aria}>
+        <a href={lp(lang, '/')}>{T.crumbs.home}</a><span aria-hidden="true">/</span><a href={lp(lang, '/services/')}>{T.crumbs.services}</a>
+        {parent && <><span aria-hidden="true">/</span><a href={parent.href}>{parent.menu}</a></>}
+        <span aria-hidden="true">/</span><span>{s.menu}</span>
+      </nav>
+      <div class="h-in">
+        <h1>{s.title}</h1>
+        <div class="h-side">
+          <p class="lead">{s.lead}</p>
+          <div class="actions">
+            <a href="#formulaire" class="btn btn--primary">{S.talk} <span class="arrow">→</span></a>
+            <PhoneBtn />
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {kids.length > 0 && (
+    <section class="section section--soft">
+      <div class="wrap">
+        <div class="head reveal"><span class="eyebrow">{S.steps}</span><h2>{S.choose}</h2></div>
+        <div class="grid-3 reveal">
+          {kids.map((k) => (
+            <a class="card" href={k.href}><h3>{k.menu}</h3><p>{k.line}</p><span class="more">{S.discover} <span class="arrow">→</span></span></a>
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+
+  {(s.forWho || s.docs) && (
+    <section class="section">
+      <div class="wrap cols">
+        {s.forWho && (
+          <div class="reveal">
+            <span class="eyebrow">{S.conditions}</span>
+            <h2 class="h">{S.forWho}</h2>
+            <ul class="ticks">{s.forWho.map((x) => <li>{x}</li>)}</ul>
+          </div>
+        )}
+        {s.docs && (
+          <div class="reveal">
+            <span class="eyebrow">{S.dossier}</span>
+            <h2 class="h">{S.docs}</h2>
+            <ul class="docs">{s.docs.map((x) => <li>{x}</li>)}</ul>
+            <p class="small">{S.docsNote}</p>
+          </div>
+        )}
+      </div>
+      {s.note && <div class="wrap"><p class="note reveal">{s.note}</p></div>}
+    </section>
+  )}
+
+  {(top.slug === 'titre-de-sejour' || top.slug === 'visa') && (
+    <section class="wrap">
+      <a class="oqtf reveal" href={lp(lang, OQTF_PATH)}>
+        <span class="tag">{T.nav.urgent}</span>
+        <span class="t">{S.oqtfBanner}</span>
+        <span class="go">{S.oqtfGo} <span class="arrow">→</span></span>
+      </a>
+    </section>
+  )}
+
+  <Steps title={S.stepsTitle} />
+
+  {siblings.length > 0 && (
+    <section class="section section--soft">
+      <div class="wrap">
+        <div class="head reveal"><span class="eyebrow">{parent!.menu}</span><h2>{S.others}</h2></div>
+        <div class="grid-3 reveal">
+          {siblings.map((k) => (
+            <a class="card" href={k.href}><h3>{k.menu}</h3><p>{k.line}</p><span class="more">{S.discover} <span class="arrow">→</span></span></a>
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+
+  {s.faq && <Faq items={s.faq} />}
+  <FormSection service={top.slug} />
+</Base>
+
+<style>
+  .hero { padding: clamp(3rem, 7vw, 5.5rem) 0 clamp(4rem, 8vw, 7rem); }
+  .h-in { display: grid; grid-template-columns: 1.3fr 1fr; gap: clamp(2rem, 5vw, 5rem); align-items: end; }
+  .h-side { display: grid; gap: 2rem; }
+  .cols { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(3rem, 7vw, 7rem); }
+  .cols > div { display: grid; gap: 1.25rem; align-content: start; }
+  .h { font-size: clamp(1.75rem, 3vw, 2.4rem); margin-bottom: 1rem; }
+  .docs { border-top: 1px solid var(--line); }
+  .docs li { padding: 1rem 0; border-bottom: 1px solid var(--line); color: var(--ink); }
+  .small { font-size: .85rem; color: var(--muted); }
+  .note { margin-top: 3rem; padding: 1.5rem 1.75rem; border-left: 2px solid var(--brand); background: var(--soft); color: var(--ink); max-width: 46rem; border-radius: 0 .5rem .5rem 0; }
+  .oqtf { display: flex; align-items: center; gap: 1.5rem; flex-wrap: wrap; background: var(--night); color: #fff; border-radius: var(--radius); padding: 1.5rem 2rem; }
+  .oqtf .t { font-size: 1.25rem; }
+  .oqtf .go { margin-left: auto; font-weight: 500; }
+  .tag { font-size: .7rem; letter-spacing: .14em; text-transform: uppercase; padding: .35rem .7rem; border-radius: 999px; background: var(--urgent); font-weight: 500; }
+  @media (max-width: 860px) { .h-in, .cols { grid-template-columns: 1fr; } }
+</style>

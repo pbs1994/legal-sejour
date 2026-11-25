@@ -1,0 +1,83 @@
+---
+import Base from '../layouts/Base.astro';
+import Delays from '../components/Delays.astro';
+import Faq from '../components/Faq.astro';
+import FormSection from '../components/FormSection.astro';
+import PhoneBtn from '../components/PhoneBtn.astro';
+import { getLang, t, lp } from '../i18n';
+const lang = getLang(Astro.url);
+const T = t(lang);
+const O = T.oqtf;
+---
+<Base title={O.title} description={O.desc}>
+  <section class="hero">
+    <div class="wrap">
+      <nav class="crumbs light" aria-label={T.crumbs.aria}><a href={lp(lang, '/')}>{T.crumbs.home}</a><span aria-hidden="true">/</span><a href={lp(lang, '/services/')}>{T.crumbs.services}</a><span aria-hidden="true">/</span><span>{T.oqtfName}</span></nav>
+      <div class="h-in">
+        <div class="h-txt">
+          <span class="tag">{T.nav.priority}</span>
+          <h1>{O.h1}</h1>
+          <p class="sub">{O.sub1} <span>{O.sub2}</span><br />{O.sub3}</p>
+          <div class="actions">
+            <a href="#formulaire" class="btn btn--urgent">{O.callback} <span class="arrow">→</span></a>
+            <PhoneBtn variant="outline-light" />
+          </div>
+        </div>
+      </div>
+      <div class="dl"><Delays /></div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap">
+      <div class="head reveal">
+        <span class="eyebrow">{O.howEyebrow}</span>
+        <h2>{O.howH2}</h2>
+      </div>
+      <ol class="steps reveal">
+        {O.how.map((s, i) => <li><span class="n">0{i + 1}</span><h3>{s.t}</h3><p>{s.d}</p></li>)}
+      </ol>
+    </div>
+  </section>
+
+  <section class="section section--soft">
+    <div class="wrap two">
+      <div class="reveal">
+        <span class="eyebrow">{O.keepEyebrow}</span>
+        <h2 class="mt">{O.keepH2}</h2>
+      </div>
+      <ul class="ticks big reveal">{O.keep.map((k) => <li>{k}</li>)}</ul>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap two">
+      <div class="reveal">
+        <span class="eyebrow">{O.casesEyebrow}</span>
+        <h2 class="mt">{O.casesH2}</h2>
+      </div>
+      <ul class="cases reveal">{O.cases.map((c) => <li>{c}</li>)}</ul>
+    </div>
+  </section>
+
+  <Faq items={O.faq} />
+  <FormSection oqtf title={O.formTitle} />
+</Base>
+
+<style>
+  .hero { background: var(--night); color: #fff; padding: clamp(3rem, 7vw, 5.5rem) 0 clamp(4rem, 8vw, 6.5rem); }
+  .crumbs.light { color: rgba(255,255,255,.5); }
+  .crumbs.light a:hover { color: #fff; }
+  .h-txt { display: grid; gap: 1.75rem; max-width: 52rem; }
+  .tag { justify-self: start; font-size: .72rem; letter-spacing: .14em; text-transform: uppercase; padding: .35rem .75rem; border-radius: 999px; background: var(--urgent); font-weight: 500; }
+  h1 { color: #fff; }
+  .sub { font-size: clamp(1.3rem, 2.4vw, 1.75rem); color: rgba(255,255,255,.7); font-weight: 300; }
+  .sub span { color: #fff; }
+  .dl { margin-top: clamp(4rem, 8vw, 6rem); }
+  .two { display: grid; grid-template-columns: 1fr 1.2fr; gap: clamp(2.5rem, 6vw, 6rem); align-items: start; }
+  .mt { margin-top: 1.25rem; }
+  .ticks.big { font-size: 1.2rem; color: var(--ink); gap: 1.4rem; }
+  .cases { border-top: 1px solid var(--line); }
+  .cases li { padding: 1.25rem 0; border-bottom: 1px solid var(--line); font-size: 1.15rem; color: var(--ink); }
+  @media (max-width: 860px) { .two { grid-template-columns: 1fr; } }
+</style>

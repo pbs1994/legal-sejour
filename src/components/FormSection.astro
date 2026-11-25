@@ -1,19 +1,20 @@
 ---
 import LeadForm from './LeadForm.astro';
 import PhoneBtn from './PhoneBtn.astro';
-const { service = '', oqtf = false, title = 'Parlons de votre situation.' } = Astro.props;
+import { getLang, t } from '../i18n';
+const S = t(getLang(Astro.url)).formSection;
+const { service = '', oqtf = false, title = S.title } = Astro.props;
+const ticks = oqtf ? S.ticksOqtf : S.ticks;
 ---
 <section class="section section--soft" id="formulaire">
   <div class="wrap fs">
     <div class="reveal intro">
-      <span class="eyebrow">{oqtf ? 'Urgence OQTF' : 'Premier contact'}</span>
+      <span class="eyebrow">{oqtf ? S.eyebrowOqtf : S.eyebrow}</span>
       <h2>{title}</h2>
       <ul class="ticks">
-        {oqtf
-          ? <><li>Rappel prioritaire</li><li>Recours rédigé et déposé dans le délai</li><li>Devis clair avant tout engagement</li></>
-          : <><li><span>1<sup>er</sup> rendez-vous gratuit, 20 minutes</span></li><li>Par téléphone ou en visio</li><li>Devis clair avant tout engagement</li></>}
+        {ticks.map((x) => <li><span set:html={x} /></li>)}
       </ul>
-      <div class="call"><p class="muted">{oqtf ? 'Urgence ? Appelez directement :' : 'Ou appelez-nous :'}</p><PhoneBtn variant={oqtf ? 'primary' : 'ghost'} /></div>
+      <div class="call"><p class="muted">{oqtf ? S.callOqtf : S.call}</p><PhoneBtn variant={oqtf ? 'primary' : 'ghost'} /></div>
     </div>
     <div class="box reveal"><LeadForm service={service} oqtf={oqtf} /></div>
   </div>

@@ -1,10 +1,12 @@
 ---
 import { SITE, telHref } from '../data/site';
+import { getLang, t } from '../i18n';
 interface Props { variant?: 'ghost' | 'outline-light' | 'light' | 'primary'; label?: string }
 const { variant = 'ghost', label } = Astro.props;
+const T = t(getLang(Astro.url));
 ---
 {SITE.phone && (
-  <a href={telHref(SITE.phone)} class={`btn btn--${variant}`} aria-label={`Appeler le ${SITE.phone}`}>
+  <a href={telHref(SITE.phone)} class={`btn btn--${variant}`} aria-label={`${T.nav.call} ${SITE.phone}`}>
     <svg width="17" height="17" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 005 5L15 13l5 2v4a2 2 0 01-2 2A16 16 0 013 6a2 2 0 012-2" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
     {label ? <span>{label} · {SITE.phone}</span> : <span>{SITE.phone}</span>}
   </a>

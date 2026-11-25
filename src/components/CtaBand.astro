@@ -1,6 +1,9 @@
 ---
 import PhoneBtn from './PhoneBtn.astro';
-const { title = 'Parlons de votre situation.', text = 'Premier rendez-vous de 20 minutes, gratuit et sans engagement.' } = Astro.props;
+import { getLang, t, lp } from '../i18n';
+const lang = getLang(Astro.url);
+const C = t(lang).cta;
+const { title = C.title, text = C.text } = Astro.props;
 ---
 <section class="band">
   <div class="wrap in reveal">
@@ -9,7 +12,7 @@ const { title = 'Parlons de votre situation.', text = 'Premier rendez-vous de 20
       <p>{text}</p>
     </div>
     <div class="actions">
-      <a href="/prendre-rendez-vous/" class="btn btn--light">Prendre rendez-vous <span class="arrow">→</span></a>
+      <a href={lp(lang, '/prendre-rendez-vous/')} class="btn btn--light">{C.btn} <span class="arrow">→</span></a>
       <PhoneBtn variant="outline-light" />
     </div>
   </div>

@@ -1,27 +1,34 @@
 ---
 import Logo from './Logo.astro';
 import { SITE, telHref } from '../data/site';
-import { GROUPS, OQTF, inGroup, href } from '../data/services';
+import { GROUP_IDS, OQTF_PATH, inGroup, groupHref } from '../data/services';
+import { getLang, t, lp, stripLang, LANGS, CODE, FR_ONLY, DEFAULT } from '../i18n';
+const lang = getLang(Astro.url);
+const T = t(lang);
 const path = Astro.url.pathname;
-const cols = GROUPS.map((g) => ({ ...g, items: inGroup(g.id).filter((s) => s.slug !== g.id) }));
+const bare = stripLang(path);
+const oqtfHref = lp(lang, OQTF_PATH);
+const cols = GROUP_IDS.map((id) => ({ id, label: T.groups[id], href: groupHref(lang, id), items: inGroup(lang, id).filter((s) => s.slug !== id) }));
+const switchTo = (l: typeof LANGS[number]) => (FR_ONLY.includes(bare) && l !== DEFAULT ? lp(l, '/') : lp(l, bare));
+const langs = LANGS.map((l) => ({ l, code: CODE[l], name: t(l).meta.name, href: switchTo(l) }));
 ---
 <header class="hdr" data-hdr>
   <div class="wrap bar">
     <Logo />
 
-    <nav class="nav" aria-label="Navigation principale">
-      <a href="/" aria-current={path === '/' ? 'page' : undefined}>Accueil</a>
+    <nav class="nav" aria-label={T.nav.mainNav}>
+      <a href={lp(lang, '/')} aria-current={bare === '/' ? 'page' : undefined}>{T.nav.home}</a>
       <div class="dd" data-dd>
         <button type="button" class="dd-btn" aria-expanded="false" aria-controls="mega">
-          Nos services <svg width="10" height="6" viewBox="0 0 10 6" aria-hidden="true"><path d="M1 1l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>
+          {T.nav.services} <svg width="10" height="6" viewBox="0 0 10 6" aria-hidden="true"><path d="M1 1l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>
         </button>
         <div class="mega" id="mega" hidden>
           <div class="wrap mega-in">
-            <a class="mega-oqtf" href={OQTF.href}>
-              <span class="tag">Priorité</span>
-              <strong>Contestation d’OQTF</strong>
-              <span>Nous rédigeons et déposons votre recours, dans les délais.</span>
-              <span class="go">Agir maintenant <span class="arrow">→</span></span>
+            <a class="mega-oqtf" href={oqtfHref}>
+              <span class="tag">{T.nav.priority}</span>
+              <strong>{T.oqtfName}</strong>
+              <span>{T.nav.megaText}</span>
+              <span class="go">{T.nav.megaGo} <span class="arrow">→</span></span>
             </a>
             {cols.map((c) => (
               <div class="mega-col">
@@ -30,48 +37,64 @@ const cols = GROUPS.map((g) => ({ ...g, items: inGroup(g.id).filter((s) => s.slu
                   : <a class="mega-h" href={c.href}>{c.label}</a>}
                 <ul>
                   {c.items.map((s) => (
-                    <li><a href={href(s)}><span>{s.menu}</span><small>{s.line}</small></a></li>
+                    <li><a href={s.href}><span>{s.menu}</span><small>{s.line}</small></a></li>
                   ))}
                 </ul>
               </div>
             ))}
           </div>
-          <div class="wrap mega-foot"><a href="/services/">Tous nos services <span class="arrow">→</span></a></div>
+          <div class="wrap mega-foot"><a href={lp(lang, '/services/')}>{T.nav.all} <span class="arrow">→</span></a></div>
         </div>
       </div>
-      <a href={OQTF.href} class="nav-oqtf" aria-current={path.startsWith(OQTF.href) ? 'page' : undefined}><i aria-hidden="true"></i>OQTF</a>
-      <a href="/pourquoi-nous/" aria-current={path.startsWith('/pourquoi-nous') ? 'page' : undefined}>Pourquoi nous ?</a>
+      <a href={oqtfHref} class="nav-oqtf" aria-current={bare.startsWith(OQTF_PATH) ? 'page' : undefined}><i aria-hidden="true"></i>{T.nav.oqtf}</a>
+      <a href={lp(lang, '/pourquoi-nous/')} aria-current={bare.startsWith('/pourquoi-nous') ? 'page' : undefined}>{T.nav.why}</a>
     </nav>
 
     <div class="cta">
-      <a href="/prendre-rendez-vous/" class="rdv"><span>1<sup>er</sup> RDV</span> <em class="script">offert !</em></a>
+      <div class="lang" data-lang>
+        <button type="button" class="lang-btn" aria-expanded="false" aria-controls="langs" aria-label={T.nav.lang}>
+          <img src={`/flags/${lang}.svg`} alt="" width="20" height="14" /><span>{CODE[lang]}</span>
+          <svg width="9" height="6" viewBox="0 0 10 6" aria-hidden="true"><path d="M1 1l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>
+        </button>
+        <ul class="lang-list" id="langs" hidden>
+          {langs.map((x) => (
+            <li><a href={x.href} hreflang={x.l} lang={x.l} aria-current={x.l === lang ? 'true' : undefined}><img src={`/flags/${x.l}.svg`} alt="" width="20" height="14" /><b>{x.code}</b><span>{x.name}</span></a></li>
+          ))}
+        </ul>
+      </div>
+      <a href={lp(lang, '/prendre-rendez-vous/')} class="rdv"><span set:html={T.nav.rdvPre} /> <em class="script">{T.nav.rdvScript}</em></a>
       {SITE.phone && (
-        <a href={telHref(SITE.phone)} class="ico" aria-label={`Appeler le ${SITE.phone}`}>
+        <a href={telHref(SITE.phone)} class="ico" aria-label={`${T.nav.call} ${SITE.phone}`}>
           <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 005 5L15 13l5 2v4a2 2 0 01-2 2A16 16 0 013 6a2 2 0 012-2" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
           <span class="num">{SITE.phone}</span>
         </a>
       )}
-      <button type="button" class="burger" aria-label="Menu" aria-expanded="false" aria-controls="mnav" data-burger><span></span><span></span></button>
+      <button type="button" class="burger" aria-label={T.nav.menu} aria-expanded="false" aria-controls="mnav" data-burger><span></span><span></span></button>
     </div>
   </div>
 
   <div class="mnav" id="mnav" hidden>
     <div class="wrap mnav-in">
-      <a href={OQTF.href} class="m-oqtf"><span class="tag">Priorité</span>Contestation d’OQTF <span class="arrow">→</span></a>
-      <a href="/" class="m-l">Accueil</a>
+      <ul class="m-langs" aria-label={T.nav.lang}>
+        {langs.map((x) => (
+          <li><a href={x.href} hreflang={x.l} lang={x.l} aria-current={x.l === lang ? 'true' : undefined}><img src={`/flags/${x.l}.svg`} alt="" width="20" height="14" />{x.code}</a></li>
+        ))}
+      </ul>
+      <a href={oqtfHref} class="m-oqtf"><span class="tag">{T.nav.priority}</span>{T.oqtfName} <span class="arrow">→</span></a>
+      <a href={lp(lang, '/')} class="m-l">{T.nav.home}</a>
       {cols.map((c) => (
         <details class="m-g">
           <summary>{c.label}</summary>
           <ul>
-            {c.id !== 'complementaires' && <li><a href={c.href}>Vue d’ensemble</a></li>}
-            {c.items.map((s) => <li><a href={href(s)}>{s.menu}</a></li>)}
+            {c.id !== 'complementaires' && <li><a href={c.href}>{T.nav.overview}</a></li>}
+            {c.items.map((s) => <li><a href={s.href}>{s.menu}</a></li>)}
           </ul>
         </details>
       ))}
-      <a href="/services/" class="m-l">Tous nos services</a>
-      <a href="/pourquoi-nous/" class="m-l">Pourquoi nous ?</a>
+      <a href={lp(lang, '/services/')} class="m-l">{T.nav.all}</a>
+      <a href={lp(lang, '/pourquoi-nous/')} class="m-l">{T.nav.why}</a>
       <div class="m-cta">
-        <a href="/prendre-rendez-vous/" class="btn btn--primary">Prendre rendez-vous — gratuit</a>
+        <a href={lp(lang, '/prendre-rendez-vous/')} class="btn btn--primary">{T.nav.mobileRdv}</a>
         {SITE.phone && <a href={telHref(SITE.phone)} class="btn btn--ghost">{SITE.phone}</a>}
       </div>
     </div>
@@ -85,17 +108,27 @@ const cols = GROUPS.map((g) => ({ ...g, items: inGroup(g.id).filter((s) => s.slu
   const mega = dd.querySelector<HTMLElement>('.mega')!;
   let t: number | undefined;
   const set = (open: boolean) => { mega.hidden = !open; btn.setAttribute('aria-expanded', String(open)); hdr.classList.toggle('open', open); };
-  btn.addEventListener('click', () => set(mega.hidden));
+  btn.addEventListener('click', () => set(mega.hidden === true));
   const fine = matchMedia('(hover: hover)');
   dd.addEventListener('mouseenter', () => { if (fine.matches) { clearTimeout(t); set(true); } });
   dd.addEventListener('mouseleave', () => { if (fine.matches) t = window.setTimeout(() => set(false), 160); });
-  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') { set(false); setM(false); } });
-  document.addEventListener('click', (e) => { if (!dd.contains(e.target as Node)) set(false); });
+
+  const lw = hdr.querySelector<HTMLElement>('[data-lang]')!;
+  const lb = lw.querySelector<HTMLButtonElement>('.lang-btn')!;
+  const ll = lw.querySelector<HTMLElement>('.lang-list')!;
+  const setL = (open: boolean) => { ll.hidden = !open; lb.setAttribute('aria-expanded', String(open)); };
+  lb.addEventListener('click', () => setL(ll.hidden === true));
+
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') { set(false); setM(false); setL(false); } });
+  document.addEventListener('click', (e) => {
+    if (!dd.contains(e.target as Node)) set(false);
+    if (!lw.contains(e.target as Node)) setL(false);
+  });
 
   const burger = hdr.querySelector<HTMLButtonElement>('[data-burger]')!;
   const mnav = hdr.querySelector<HTMLElement>('.mnav')!;
   const setM = (open: boolean) => { mnav.hidden = !open; burger.setAttribute('aria-expanded', String(open)); document.body.style.overflow = open ? 'hidden' : ''; hdr.classList.toggle('m-open', open); };
-  burger.addEventListener('click', () => setM(mnav.hidden));
+  burger.addEventListener('click', () => setM(mnav.hidden === true));
 
   const onScroll = () => hdr.classList.toggle('scrolled', scrollY > 8);
   addEventListener('scroll', onScroll, { passive: true }); onScroll();
@@ -134,14 +167,14 @@ const cols = GROUPS.map((g) => ({ ...g, items: inGroup(g.id).filter((s) => s.slu
   .mega-foot { border-top: 1px solid var(--line); padding-top: 1rem; padding-bottom: 1.25rem; font-size: .92rem; color: var(--brand); font-weight: 500; }
 
   .cta { display: flex; align-items: center; gap: .9rem; }
-  .rdv { display: inline-flex; align-items: baseline; gap: .45rem; color: var(--brand); font-weight: 600; font-size: 1.05rem; padding: .55rem 1.1rem; border-radius: 999px; transition: background .2s; }
+  .rdv { display: inline-flex; white-space: nowrap; align-items: baseline; gap: .45rem; color: var(--brand); font-weight: 600; font-size: 1.05rem; padding: .55rem 1.1rem; border-radius: 999px; transition: background .2s; }
   .rdv:hover { background: var(--soft); }
   .rdv sup { font-size: .6em; }
   .rdv em { font-style: normal; color: var(--brand-2); font-size: 1.55rem; line-height: .8; position: relative; transform: rotate(-4deg); display: inline-block; }
   .rdv em::after { content: ''; position: absolute; left: 0; right: .2rem; bottom: -.15rem; height: 2px; border-radius: 2px; background: var(--brand-2); transform: rotate(-2deg); }
   .ico { height: 2.9rem; min-width: 2.9rem; padding: 0 1.1rem 0 .95rem; border-radius: 999px; border: 1px solid #cfe0ff; display: inline-flex; align-items: center; justify-content: center; gap: .55rem; color: var(--brand-2); font-weight: 500; font-size: .98rem; white-space: nowrap; transition: background .2s; }
   .num { color: var(--ink); letter-spacing: .01em; }
-  @media (min-width: 1081px) and (max-width: 1260px) { .ico { padding: 0; width: 2.9rem; } .num { display: none; } }
+  @media (min-width: 1081px) and (max-width: 1380px) { .ico { padding: 0; width: 2.9rem; } .num { display: none; } }
   .ico:hover { background: var(--soft); }
   .burger { display: none; width: 2.9rem; height: 2.9rem; border: 0; background: none; cursor: pointer; position: relative; }
   .burger span { position: absolute; left: .7rem; right: .7rem; height: 1.6px; background: var(--ink); transition: transform .25s, top .25s; }
@@ -162,6 +195,22 @@ const cols = GROUPS.map((g) => ({ ...g, items: inGroup(g.id).filter((s) => s.slu
   .m-g a { color: var(--muted); }
   .m-cta { display: grid; gap: .75rem; margin-top: 2rem; }
 
+
+  .lang { position: relative; }
+  .lang-btn { display: inline-flex; align-items: center; gap: .45rem; height: 2.9rem; padding: 0 .75rem; border: 1px solid var(--line); border-radius: 999px; background: #fff; cursor: pointer; font-size: .85rem; font-weight: 500; letter-spacing: .06em; color: var(--ink); }
+  .lang-btn:hover { border-color: var(--brand); }
+  .lang-btn img, .lang-list img, .m-langs img { width: 20px; height: 14px; border-radius: 2px; box-shadow: 0 0 0 1px rgba(15,23,42,.08); object-fit: cover; }
+  .lang-btn[aria-expanded='true'] svg { transform: rotate(180deg); }
+  .lang-list { position: absolute; right: 0; top: calc(100% + .5rem); min-width: 12rem; background: #fff; border: 1px solid var(--line); border-radius: var(--radius); box-shadow: 0 20px 50px -20px rgba(15,23,42,.25); padding: .4rem; z-index: 5; }
+  .lang-list a { display: grid; grid-template-columns: 20px 2.6rem 1fr; gap: .6rem; align-items: center; padding: .6rem .7rem; border-radius: .5rem; font-size: .92rem; }
+  .lang-list a:hover { background: var(--soft); }
+  .lang-list a[aria-current] { background: var(--soft); color: var(--brand); }
+  .lang-list b { font-weight: 500; letter-spacing: .06em; font-size: .82rem; }
+  .lang-list span { color: var(--muted); }
+  .m-langs { display: flex; flex-wrap: wrap; gap: .5rem; margin-bottom: 1.25rem; }
+  .m-langs a { display: inline-flex; align-items: center; gap: .45rem; padding: .5rem .75rem; border: 1px solid var(--line); border-radius: 999px; font-size: .85rem; font-weight: 500; letter-spacing: .06em; }
+  .m-langs a[aria-current] { border-color: var(--brand); color: var(--brand); background: var(--soft); }
+  @media (max-width: 1080px) { .lang { display: none; } }
   @media (max-width: 1080px) {
     .nav { display: none; }
     .burger { display: block; }
@@ -171,5 +220,7 @@ const cols = GROUPS.map((g) => ({ ...g, items: inGroup(g.id).filter((s) => s.slu
     .rdv { padding: .4rem .5rem; font-size: .95rem; }
     .rdv em { font-size: 1.35rem; }
     .ico { padding: 0; width: 2.6rem; min-width: 2.6rem; height: 2.6rem; } .num { display: none; }
+    /* libellé trop long en russe/roumain : le CTA reste dans le hero et le menu mobile */
+    :global(html[lang='ru']) .rdv, :global(html[lang='ro']) .rdv { display: none; }
   }
 </style>

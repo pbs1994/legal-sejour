@@ -1,0 +1,40 @@
+---
+import Base from '../layouts/Base.astro';
+import Steps from '../components/Steps.astro';
+import CtaBand from '../components/CtaBand.astro';
+import { getLang, t, lp } from '../i18n';
+const lang = getLang(Astro.url);
+const T = t(lang);
+const Y = T.why;
+---
+<Base title={Y.title} description={Y.desc}>
+  <section class="hero">
+    <div class="wrap">
+      <nav class="crumbs" aria-label={T.crumbs.aria}><a href={lp(lang, '/')}>{T.crumbs.home}</a><span aria-hidden="true">/</span><span>{T.crumbs.why}</span></nav>
+      <h1>{Y.h1a}<br /><span class="b">{Y.h1b}</span></h1>
+    </div>
+  </section>
+  <section class="section" style="padding-top:0">
+    <div class="wrap grid-3 pts">
+      {Y.points.map((p, i) => (
+        <div class="p reveal"><span>{String(i + 1).padStart(2, '0')}</span><h3>{p.t}</h3><p>{p.d}</p></div>
+      ))}
+    </div>
+  </section>
+  <Steps soft />
+  <section class="section">
+    <div class="wrap">
+      <p class="statement reveal">{Y.statement}</p>
+    </div>
+  </section>
+  <CtaBand />
+</Base>
+<style>
+  .hero { padding: clamp(3rem, 7vw, 5.5rem) 0 clamp(4rem, 8vw, 7rem); }
+  .b { color: var(--brand); }
+  .pts { row-gap: 4rem; column-gap: 3rem; }
+  .p { display: grid; gap: 1rem; padding-top: 2rem; border-top: 1px solid var(--ink); align-content: start; }
+  .p span { font-size: .85rem; color: var(--brand); letter-spacing: .08em; }
+  .p p { color: var(--muted); }
+  .statement { font-size: clamp(1.3rem, 2.2vw, 1.75rem); line-height: 1.45; color: var(--ink); font-weight: 300; max-width: 48rem; }
+</style>

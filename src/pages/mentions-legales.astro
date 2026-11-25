@@ -7,11 +7,12 @@ const L = SITE.legal;
   <section class="section">
     <div class="wrap prose">
       <h1>Mentions légales</h1>
-      <h2>Éditeur</h2>
-      <p>{L.company} — SIREN {L.siren}<br />{L.address}<br />Contact : <a href={`mailto:${SITE.email}`}>{SITE.email}</a></p>
-      <p>Directeur de la publication : {L.publisher}</p>
+      <h2>Éditeur du site</h2>
+      <p>{SITE.name}<br />{L.form}<br />SIREN : {L.siren}<br />Code APE : {L.ape}<br />Siège : {L.address}</p>
+      <p>Téléphone : {SITE.phone}<br />E-mail : <a href={`mailto:${SITE.email}`}>{SITE.email}</a></p>
+      <p>{L.vat}</p>
       <h2>Hébergement</h2>
-      <p>{L.host}</p>
+      <p>{L.host || '[Hébergeur — nom, adresse, téléphone]'}</p>
       <h2>Nature du service</h2>
       <p>{SITE.name} est un service privé d’accompagnement administratif. Il n’est ni un organisme public, ni un cabinet d’avocats. Les démarches officielles sont gratuites sur les sites de l’administration.</p>
       <h2>Propriété intellectuelle</h2>

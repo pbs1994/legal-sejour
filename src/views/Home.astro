@@ -1,0 +1,159 @@
+---
+import Base from '../layouts/Base.astro';
+import Steps from '../components/Steps.astro';
+import Faq from '../components/Faq.astro';
+import FormSection from '../components/FormSection.astro';
+import Delays from '../components/Delays.astro';
+import PhoneBtn from '../components/PhoneBtn.astro';
+import { OQTF_PATH } from '../data/services';
+import { getLang, t, lp } from '../i18n';
+const lang = getLang(Astro.url);
+const T = t(lang);
+const H = T.home;
+const oqtf = lp(lang, OQTF_PATH);
+const chipHrefs = [OQTF_PATH, '/services/titre-de-sejour/', '/services/titre-de-sejour/renouvellement/', '/services/naturalisation/', '/services/visa/', '/services/regroupement-familial/', '/services/dalo/', '/services/dcem/'];
+const chips = H.chips.map((l, i) => ({ l, h: lp(lang, chipHrefs[i]), u: i === 0 }));
+const rowHrefs = [OQTF_PATH, '/services/titre-de-sejour/', '/services/naturalisation/', '/services/visa/', '/services/regroupement-familial/', '/services/'];
+const rows = H.rows.map((r, i) => ({ ...r, h: lp(lang, rowHrefs[i]), u: i === 0 }));
+---
+<Base title={H.title} description={H.desc}>
+  <section class="hero">
+    <div class="wrap hero-in">
+      <div class="hero-txt">
+        <span class="eyebrow">{H.eyebrow}</span>
+        <h1>{H.h1a} <span class="b">{H.h1b}</span></h1>
+        <p class="lead">{H.lead}</p>
+        <div class="actions">
+          <a href={lp(lang, '/prendre-rendez-vous/')} class="btn btn--primary">{H.book} <span class="arrow">→</span></a>
+          <PhoneBtn />
+        </div>
+      </div>
+      <a class="alert" href={oqtf}>
+        <span class="tag">{T.nav.urgent}</span>
+        <p class="a-t">{H.alertQ}</p>
+        <p class="a-d">{H.alertD}</p>
+        <div class="a-n">{T.delays.short.map((x) => <span>{x}</span>)}</div>
+        <span class="a-go">{H.alertGo} <span class="arrow">→</span></span>
+      </a>
+    </div>
+  </section>
+
+  <section class="chips-s">
+    <div class="wrap chips-in">
+      <p class="muted">{H.demand}</p>
+      <ul class="chips">
+        {chips.map((c) => <li><a href={c.h} class:list={{ u: c.u }}>{c.l}</a></li>)}
+      </ul>
+    </div>
+  </section>
+
+  <section class="oqtf section">
+    <div class="wrap">
+      <div class="o-head reveal">
+        <div>
+          <span class="eyebrow light">{H.oEyebrow}</span>
+          <h2>{H.oH2}</h2>
+        </div>
+        <p>{H.oP}</p>
+      </div>
+      <div class="reveal"><Delays /></div>
+      <div class="actions reveal" style="margin-top:3rem">
+        <a href={oqtf} class="btn btn--light">{H.oBtn} <span class="arrow">→</span></a>
+        <PhoneBtn variant="outline-light" label={H.oCall} />
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap">
+      <div class="head reveal">
+        <span class="eyebrow">{H.sEyebrow}</span>
+        <h2>{H.sH2}</h2>
+      </div>
+      <ul class="rows reveal">
+        {rows.map((r, i) => (
+          <li>
+            <a href={r.h} class:list={{ u: r.u }}>
+              <span class="n">{String(i + 1).padStart(2, '0')}</span>
+              <span class="t">{r.t}</span>
+              <span class="d">{r.d}</span>
+              <span class="arrow" aria-hidden="true">→</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <Steps soft />
+
+  <section class="section">
+    <div class="wrap">
+      <div class="head reveal">
+        <span class="eyebrow">{H.eEyebrow}</span>
+        <h2>{H.eH2}</h2>
+      </div>
+      <div class="grid-3 reveal">
+        {H.eng.map((e, i) => <div class="eng"><span>0{i + 1}</span><h3>{e.t}</h3><p>{e.d}</p></div>)}
+      </div>
+    </div>
+  </section>
+
+  <Faq items={H.faq} />
+  <FormSection />
+</Base>
+
+<style>
+  .hero { padding: clamp(4rem, 10vw, 8.5rem) 0 clamp(4rem, 8vw, 7rem); }
+  .hero-in { display: grid; grid-template-columns: 1.55fr 1fr; gap: clamp(2.5rem, 6vw, 6rem); align-items: end; }
+  .hero-txt { display: grid; gap: 2rem; }
+  .hero h1 .b { color: var(--brand); }
+  .alert { background: var(--night); color: #fff; border-radius: calc(var(--radius) * 1.5); padding: 2.25rem; display: grid; gap: 1rem; transition: transform .25s, box-shadow .25s; }
+  .alert:hover { transform: translateY(-3px); box-shadow: 0 30px 80px -30px rgba(12,26,51,.6); }
+  .tag { justify-self: start; font-size: .7rem; letter-spacing: .14em; text-transform: uppercase; padding: .35rem .7rem; border-radius: 999px; background: var(--urgent); font-weight: 500; }
+  .a-t { font-size: 1.6rem; line-height: 1.15; letter-spacing: -.02em; font-weight: 450; }
+  .a-d { color: rgba(255,255,255,.65); font-size: .98rem; }
+  .a-n { display: flex; gap: 1.5rem; padding: 1.25rem 0; margin: .5rem 0; border-top: 1px solid rgba(255,255,255,.12); border-bottom: 1px solid rgba(255,255,255,.12); font-size: 1.6rem; font-weight: 300; }
+  .a-n span:first-child { color: #ff6b7f; }
+  .a-go { font-weight: 500; }
+
+  .chips-s { border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); padding: 1.5rem 0; }
+  .chips-in { display: flex; align-items: center; gap: 2rem; flex-wrap: wrap; }
+  .chips { display: flex; flex-wrap: wrap; gap: .6rem; }
+  .chips a { display: inline-block; padding: .55rem 1.05rem; border: 1px solid var(--line); border-radius: 999px; font-size: .92rem; color: var(--ink); transition: border-color .2s, color .2s, background .2s; }
+  .chips a:hover { border-color: var(--brand); color: var(--brand); }
+  .chips a.u { border-color: var(--urgent); color: var(--urgent); }
+  .chips a.u:hover { background: var(--urgent); color: #fff; }
+
+  .oqtf { background: var(--night); color: #fff; }
+  .oqtf h2 { color: #fff; margin-top: 1.25rem; }
+  .eyebrow.light { color: var(--accent); }
+  .o-head { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; align-items: end; margin-bottom: clamp(3rem, 6vw, 5rem); }
+  .o-head p { color: rgba(255,255,255,.7); font-size: 1.2rem; max-width: 36ch; }
+
+  .rows { border-top: 1px solid var(--line); }
+  .rows li { border-bottom: 1px solid var(--line); }
+  .rows a { display: grid; grid-template-columns: 4rem 1.1fr 1.3fr 2rem; gap: 1.5rem; align-items: center; padding: 2rem 0; transition: padding .25s, color .2s; }
+  .rows a:hover { padding-left: .75rem; }
+  .rows .n { color: var(--muted); font-size: .85rem; letter-spacing: .08em; }
+  .rows .t { font-size: clamp(1.35rem, 2.4vw, 1.9rem); color: var(--ink); letter-spacing: -.02em; }
+  .rows .d { color: var(--muted); }
+  .rows .arrow { color: var(--brand); font-size: 1.3rem; justify-self: end; }
+  .rows a:hover .t { color: var(--brand); }
+  .rows a.u .t { color: var(--urgent); }
+  .rows a.u .n { color: var(--urgent); }
+
+  .eng { display: grid; gap: 1rem; padding-top: 2rem; border-top: 1px solid var(--ink); }
+  .eng span { font-size: .85rem; color: var(--brand); letter-spacing: .08em; }
+  .eng p { color: var(--muted); }
+
+  @media (max-width: 960px) {
+    .hero-in { grid-template-columns: 1fr; }
+    .o-head { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 720px) {
+    .rows a { grid-template-columns: 2.5rem 1fr 1.5rem; row-gap: .4rem; }
+    .rows .d { grid-column: 2; grid-row: 2; font-size: .95rem; }
+    .rows .arrow { grid-column: 3; grid-row: 1; }
+  }
+</style>

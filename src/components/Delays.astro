@@ -1,20 +1,17 @@
 ---
+import { getLang, t } from '../i18n';
+const D = t(getLang(Astro.url)).delays;
 const { light = false } = Astro.props;
-const items = [
-  { n: '30', u: 'jours', d: 'OQTF avec délai de départ volontaire, le plus souvent après un refus de titre.' },
-  { n: '7', u: 'jours', d: 'OQTF sans délai de départ volontaire et certaines situations particulières.' },
-  { n: '48', u: 'heures', d: 'En cas de placement en rétention ou d’assignation à résidence.' },
-];
 ---
 <div class:list={['delays', { light }]}>
-  {items.map((i) => (
+  {D.items.map((i) => (
     <div class="d">
       <p class="num">{i.n}<span>{i.u}</span></p>
       <p class="txt">{i.d}</p>
     </div>
   ))}
 </div>
-<p class:list={['fine', { light }]}>Délais indicatifs. Le délai applicable est celui mentionné sur votre décision et court à compter de sa notification.</p>
+<p class:list={['fine', { light }]}>{D.fine}</p>
 <style>
   .delays { display: grid; grid-template-columns: repeat(3, 1fr); border-top: 1px solid rgba(255,255,255,.15); }
   .d { padding: 2rem 2rem 0 0; display: grid; gap: 1rem; align-content: start; }

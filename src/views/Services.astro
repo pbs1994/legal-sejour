@@ -1,0 +1,61 @@
+---
+import Base from '../layouts/Base.astro';
+import CtaBand from '../components/CtaBand.astro';
+import { GROUP_IDS, OQTF_PATH, inGroup, groupHref } from '../data/services';
+import { getLang, t, lp } from '../i18n';
+const lang = getLang(Astro.url);
+const T = t(lang);
+const P = T.servicesPage;
+---
+<Base title={P.title} description={P.desc}>
+  <section class="hero">
+    <div class="wrap">
+      <nav class="crumbs" aria-label={T.crumbs.aria}><a href={lp(lang, '/')}>{T.crumbs.home}</a><span aria-hidden="true">/</span><span>{T.crumbs.services}</span></nav>
+      <h1>{P.h1}</h1>
+    </div>
+  </section>
+
+  <section class="wrap">
+    <a href={lp(lang, OQTF_PATH)} class="feat reveal">
+      <span class="tag">{T.nav.priority}</span>
+      <span class="t">{T.oqtfName}</span>
+      <span class="d">{P.featD}</span>
+      <span class="arrow" aria-hidden="true">→</span>
+    </a>
+  </section>
+
+  <section class="section">
+    <div class="wrap groups">
+      {GROUP_IDS.map((g) => (
+        <div class="g reveal">
+          {g === 'complementaires' ? <h2>{T.groups.complShort}</h2> : <h2><a href={groupHref(lang, g)}>{T.groups[g]}</a></h2>}
+          <ul>
+            {inGroup(lang, g).filter((s) => s.slug !== g).map((s) => (
+              <li><a href={s.href}><span>{s.menu}</span><small>{s.line}</small></a></li>
+            ))}
+          </ul>
+        </div>
+      ))}
+    </div>
+  </section>
+  <CtaBand />
+</Base>
+<style>
+  .hero { padding: clamp(3rem, 7vw, 5.5rem) 0 clamp(2.5rem, 5vw, 4rem); }
+  .feat { display: grid; grid-template-columns: auto 1fr 1.2fr auto; gap: 2rem; align-items: center; background: var(--night); color: #fff; border-radius: calc(var(--radius) * 1.5); padding: 2.25rem 2.5rem; transition: transform .25s; }
+  .feat:hover { transform: translateY(-2px); }
+  .feat .t { font-size: clamp(1.5rem, 2.6vw, 2.2rem); letter-spacing: -.02em; }
+  .feat .d { color: rgba(255,255,255,.65); }
+  .feat .arrow { font-size: 1.4rem; }
+  .tag { font-size: .7rem; letter-spacing: .14em; text-transform: uppercase; padding: .35rem .7rem; border-radius: 999px; background: var(--urgent); font-weight: 500; }
+  .groups { display: grid; grid-template-columns: repeat(4, 1fr); gap: 3rem; }
+  .g h2 { font-size: 1.5rem; padding-bottom: 1.25rem; border-bottom: 1px solid var(--ink); margin-bottom: 1.25rem; }
+  .g h2 a:hover { color: var(--brand); }
+  .g ul { display: grid; gap: 1.1rem; }
+  .g li a { display: grid; gap: .15rem; }
+  .g li span { color: var(--ink); }
+  .g li small { color: var(--muted); font-size: .85rem; }
+  .g li a:hover span { color: var(--brand); }
+  @media (max-width: 960px) { .groups { grid-template-columns: 1fr 1fr; } .feat { grid-template-columns: 1fr; gap: 1rem; justify-items: start; } }
+  @media (max-width: 560px) { .groups { grid-template-columns: 1fr; } }
+</style>
