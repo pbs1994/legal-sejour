@@ -16,7 +16,7 @@ const kids = childrenOf(lang, s.slug);
 const siblings = parent ? childrenOf(lang, parent.slug).filter((x) => x.slug !== s.slug) : [];
 const top = parent ?? s;
 ---
-<Base title={s.title} description={`${s.title} : ${s.lead} ${S.descSuffix}`}>
+<Base title={s.title} description={`${s.title}${lang === "fr" ? " :" : ":"} ${s.lead} ${S.descSuffix}`}>
   <section class="hero">
     <div class="wrap">
       <nav class="crumbs" aria-label={T.crumbs.aria}>
