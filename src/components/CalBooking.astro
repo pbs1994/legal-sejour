@@ -1,23 +1,101 @@
 ---
-// Module de réservation Cal.com (+ formulaire de rappel en repli)
+// Module de réservation : calendrier du site (dans la langue de la page),
+// créneaux lus sur l'API publique Cal.com, réservation via /api/book.
+// En repli : formulaire de rappel.
 import LeadForm from './LeadForm.astro';
-import { getLang, t } from '../i18n';
+import { getLang, t, svcText } from '../i18n';
 import { SITE } from '../data/site';
 interface Props { lazy?: boolean; self?: boolean }
 const { lazy = false, self = false } = Astro.props;
 const lang = getLang(Astro.url);
-const B = t(lang).booking;
-const calUrl = `https://cal.com/${SITE.cal}`;
+const T = t(lang);
+const B = T.booking;
+const F = T.form;
+// valeur = option Cal.com (français), libellé = langue de la page
+const demarches = [
+  { v: 'Contestation OQTF', l: T.oqtfName },
+  { v: 'Titre de séjour', l: svcText(lang, 'titre-de-sejour').menu },
+  { v: 'Naturalisation', l: svcText(lang, 'naturalisation').menu },
+  { v: 'Regroupement familial', l: svcText(lang, 'regroupement-familial').menu },
+  { v: 'Autre', l: F.other },
+];
+const strings = {
+  at: B.at, noSlots: B.noSlots, pickDay: B.pickDay, loadErr: B.loadErr, badPhone: B.badPhone,
+  taken: B.taken, err: B.err, doneVideo: B.doneVideo, donePhone: B.donePhone, sending: F.sending,
+};
 ---
 <div class="main">
-  <div class="box cal-box">
-    <div id="cal-inline" class="cal" data-cal={SITE.cal} data-lang={lang} data-lazy={lazy ? "1" : undefined} data-self={self ? "1" : undefined}>
-      <p class="cal-loading">{B.loading}</p>
+  <div class="box bk" data-bk data-cal={SITE.cal} data-lang={lang} data-intl={T.meta.intl}
+    data-lazy={lazy ? '1' : undefined} data-self={self ? '1' : undefined} data-t={JSON.stringify(strings)}>
+
+    <!-- 1. date et heure -->
+    <fieldset class="pick" data-step="pick">
+      <legend class="sr-only">{B.legend}</legend>
+      <div class="cal">
+        <div class="cal-h">
+          <p class="month" data-month></p>
+          <div class="nav">
+            <button type="button" data-prev aria-label={B.prev}>‹</button>
+            <button type="button" data-next aria-label={B.next}>›</button>
+          </div>
+        </div>
+        <div class="dow" aria-hidden="true" data-dow></div>
+        <div class="days" data-days aria-busy="true"></div>
+      </div>
+      <div class="slots">
+        <p class="slots-h" data-slots-h>{B.pickDay}</p>
+        <div class="slots-g" data-slots-g></div>
+        <p class="tz">{B.tz}</p>
+      </div>
+    </fieldset>
+    <p class="load-err" data-load-err hidden>{B.loadErr}</p>
+
+    <!-- 2. coordonnées -->
+    <form class="bk-form" data-step="form" hidden novalidate>
+      <div class="chosen">
+        <div><span class="chosen-l">{B.chosen}</span> <strong data-chosen></strong></div>
+        <button type="button" class="link" data-change>{B.change}</button>
+      </div>
+      <div class="row">
+        <div class="field"><label for="b-first">{F.first} *</label><input id="b-first" name="firstname" autocomplete="given-name" required /></div>
+        <div class="field"><label for="b-last">{F.last} *</label><input id="b-last" name="lastname" autocomplete="family-name" required /></div>
+      </div>
+      <div class="row">
+        <div class="field"><label for="b-email">{F.email} *</label><input id="b-email" name="email" type="email" autocomplete="email" required /></div>
+        <div class="field"><label for="b-phone">{F.phone} *</label><input id="b-phone" name="phone" type="tel" autocomplete="tel" required placeholder="+33 6 12 34 56 78" aria-describedby="b-phone-h" /><small id="b-phone-h" class="hint">{B.phoneHint}</small></div>
+      </div>
+      <div class="row">
+        <div class="field">
+          <label for="b-dem">{F.request} *</label>
+          <select id="b-dem" name="demarche" required>
+            <option value="" selected disabled>{F.select}</option>
+            {demarches.map((d) => <option value={d.v}>{d.l}</option>)}
+          </select>
+        </div>
+        <fieldset class="field mode">
+          <legend>{B.mode}</legend>
+          <label><input type="radio" name="mode" value="video" checked /> <span>{B.video}</span></label>
+          <label><input type="radio" name="mode" value="phone" /> <span>{B.phoneMode}</span></label>
+        </fieldset>
+      </div>
+      <div class="field"><label for="b-msg">{F.message} <span class="opt">{F.optional}</span></label><textarea id="b-msg" name="message" rows="3"></textarea></div>
+      <div class="hp" aria-hidden="true"><label>{F.website}<input name="website" tabindex="-1" autocomplete="off" /></label></div>
+      <label class="consent"><input type="checkbox" name="consent" value="1" required /> <span>{F.consent} <a href="/politique-de-confidentialite/" hreflang="fr">{F.more}</a></span></label>
+      <div class="submit">
+        <button class="btn btn--primary" type="submit">{B.submit} <span class="arrow">→</span></button>
+        <p class="form-status" role="status" aria-live="polite" data-status></p>
+      </div>
+    </form>
+
+    <!-- 3. confirmation -->
+    <div class="done" data-step="done" hidden tabindex="-1">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M7.5 12.5l3 3 6-6.5"/></svg>
+      <h3>{B.done}</h3>
+      <p data-done></p>
     </div>
-    <p class="cal-alt"><a href={calUrl} target="_blank" rel="noopener">{B.open} ↗</a></p>
   </div>
 
-  <details class="callback">
+  <details class="callback" data-callback>
     <summary><span>{B.callback}</span></summary>
     <p class="cb-lead">{B.callbackLead}</p>
     <LeadForm />
@@ -25,72 +103,235 @@ const calUrl = `https://cal.com/${SITE.cal}`;
 </div>
 
 <script>
-  // Cal.com : intégration officielle (embed.js), espace de noms « rdv »
-  type CalFn = ((...a: unknown[]) => void) & { loaded?: boolean; ns: Record<string, CalFn>; q: unknown[] };
-  const w = window as unknown as { Cal: CalFn };
-  (function (C: typeof w, A: string, L: string) {
-    const p = (a: CalFn, ar: unknown) => { a.q.push(ar); };
-    const d = document;
-    C.Cal = C.Cal || (function (...ar: unknown[]) {
-      const cal = C.Cal;
-      if (!cal.loaded) { cal.ns = {}; cal.q = cal.q || []; d.head.appendChild(d.createElement('script')).src = A; cal.loaded = true; }
-      if (ar[0] === L) {
-        const api = (function (...a: unknown[]) { p(api, a); }) as CalFn;
-        const namespace = ar[1];
-        api.q = api.q || [];
-        if (typeof namespace === 'string') { cal.ns[namespace] = cal.ns[namespace] || api; p(cal.ns[namespace], ar); p(cal, ['initNamespace', namespace]); } else p(cal, ar);
-        return;
+  type Slots = Record<string, string[]>; // 'YYYY-MM-DD' → ['HH:MM' heure de Paris, ISO]
+  const root = document.querySelector<HTMLElement>('[data-bk]');
+  if (root) init(root);
+
+  function init(root: HTMLElement) {
+    const S = JSON.parse(root.dataset.t!) as Record<string, string>;
+    const [username, slug] = root.dataset.cal!.split('/');
+    const lang = root.dataset.lang!;
+    const loc = root.dataset.intl!;
+    const $ = <E extends Element = HTMLElement>(s: string) => root.querySelector<E>(s)!;
+    const pick = $('[data-step=pick]'), form = $<HTMLFormElement>('[data-step=form]'), done = $('[data-step=done]');
+    const monthEl = $('[data-month]'), daysEl = $('[data-days]'), slotsH = $('[data-slots-h]'), slotsG = $('[data-slots-g]');
+    const status = $('[data-status]'), loadErr = $('[data-load-err]');
+    const btn = form.querySelector<HTMLButtonElement>('button[type=submit]')!;
+    // ramène le haut du module à l'écran (utile sur mobile après changement d'étape)
+    const toTop = () => { if (root.getBoundingClientRect().top < 0) root.scrollIntoView({ block: 'start', behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' }); };
+
+    const pad = (n: number) => String(n).padStart(2, '0');
+    const key = (y: number, m: number, d: number) => `${y}-${pad(m + 1)}-${pad(d)}`;
+    // « aujourd'hui » à Paris, quel que soit le fuseau du visiteur
+    const [ty, tm, td] = new Intl.DateTimeFormat('en-CA', { timeZone: 'Europe/Paris' }).format(new Date()).split('-').map(Number);
+    const todayKey = key(ty, tm - 1, td);
+    const maxD = new Date(Date.UTC(ty, tm - 1, td + 60));
+    const maxKey = key(maxD.getUTCFullYear(), maxD.getUTCMonth(), maxD.getUTCDate());
+    let vy = ty, vm = tm - 1;
+    let picked = '', slotIso = '', slotLabel = '';
+    const cache = new Map<string, Slots>();
+
+    const fmtM = new Intl.DateTimeFormat(loc, { month: 'long', timeZone: 'UTC' });
+    const fmtD = new Intl.DateTimeFormat(loc, { weekday: 'long', day: 'numeric', month: 'long', timeZone: 'UTC' });
+    const fmtW = new Intl.DateTimeFormat(loc, { weekday: 'short', timeZone: 'UTC' });
+    const utc = (k: string) => { const [y, m, d] = k.split('-').map(Number); return new Date(Date.UTC(y, m - 1, d)); };
+    const hm = (t: string) => (loc.startsWith('fr') ? t.replace(':', 'h') : t);
+    $('[data-dow]').innerHTML = Array.from({ length: 7 }, (_, i) => `<span>${fmtW.format(new Date(Date.UTC(2024, 0, 1 + i)))}</span>`).join('');
+
+    // ---- créneaux (API publique Cal.com, heure de Paris)
+    async function load(y: number, m: number): Promise<Slots> {
+      const mk = `${y}-${m}`;
+      if (cache.has(mk)) return cache.get(mk)!;
+      const first = key(y, m, 1), last = key(y, m, new Date(Date.UTC(y, m + 1, 0)).getUTCDate());
+      const start = first < todayKey ? todayKey : first, end = last > maxKey ? maxKey : last;
+      const out: Slots = {};
+      if (start <= end) {
+        const u = new URL('https://api.cal.com/v2/slots');
+        Object.entries({ username, eventTypeSlug: slug, start, end, timeZone: 'Europe/Paris' }).forEach(([k, v]) => u.searchParams.set(k, v));
+        const r = await fetch(u, { headers: { 'cal-api-version': '2024-09-04' } });
+        if (!r.ok) throw new Error(String(r.status));
+        const j = await r.json();
+        for (const [d, list] of Object.entries(j.data || {})) out[d] = (list as { start: string }[]).map((s) => s.start);
       }
-      p(cal, ar);
-    } as CalFn);
-  })(w, 'https://app.cal.com/embed/embed.js', 'init');
+      cache.set(mk, out);
+      return out;
+    }
 
-  const el = document.getElementById('cal-inline')!;
-  // Démarche pré-remplie selon la page d'où vient le visiteur
-  // page d'origine : la page courante si le module y est intégré (accueil), sinon le referrer
-  const from = el.dataset.self ? location.pathname : (() => { try { return new URL(document.referrer).pathname; } catch { return ''; } })();
-  const demarche =
-    /contestation-oqtf/.test(from) ? 'Contestation OQTF' :
-    /naturalisation/.test(from) ? 'Naturalisation' :
-    /titre-de-sejour/.test(from) ? 'Titre de séjour' :
-    /regroupement-familial/.test(from) ? 'Regroupement familial' : '';
+    async function render() {
+      monthEl.innerHTML = `${fmtM.format(new Date(Date.UTC(vy, vm, 1)))} <span>${vy}</span>`;
+      ($('[data-prev]') as HTMLButtonElement).disabled = vy * 12 + vm <= ty * 12 + tm - 1;
+      ($('[data-next]') as HTMLButtonElement).disabled = vy * 12 + vm >= maxD.getUTCFullYear() * 12 + maxD.getUTCMonth();
+      daysEl.setAttribute('aria-busy', 'true');
+      let slots: Slots = {};
+      try { slots = await load(vy, vm); loadErr.hidden = true; }
+      catch { loadErr.hidden = false; (root.nextElementSibling as HTMLDetailsElement | null)?.setAttribute('open', ''); }
+      daysEl.innerHTML = '';
+      const lead = (new Date(Date.UTC(vy, vm, 1)).getUTCDay() + 6) % 7;
+      for (let i = 0; i < lead; i++) daysEl.append(document.createElement('span'));
+      const n = new Date(Date.UTC(vy, vm + 1, 0)).getUTCDate();
+      let firstFree = '';
+      for (let i = 1; i <= n; i++) {
+        const k = key(vy, vm, i);
+        const b = document.createElement('button');
+        b.type = 'button'; b.textContent = String(i);
+        b.disabled = !slots[k]?.length;
+        if (!b.disabled && !firstFree) firstFree = k;
+        b.setAttribute('aria-label', fmtD.format(utc(k)));
+        if (k === todayKey) b.classList.add('today');
+        if (k === picked) b.setAttribute('aria-pressed', 'true');
+        b.addEventListener('click', () => { picked = k; daysEl.querySelectorAll('[aria-pressed]').forEach((x) => x.removeAttribute('aria-pressed')); b.setAttribute('aria-pressed', 'true'); renderSlots(slots[k] || []); });
+        daysEl.append(b);
+      }
+      daysEl.removeAttribute('aria-busy');
+      // premier jour libre sélectionné d'office
+      if (!picked || !slots[picked]) { if (firstFree) { picked = firstFree; daysEl.querySelector<HTMLButtonElement>(`button:nth-of-type(${+firstFree.slice(8)})`)?.setAttribute('aria-pressed', 'true'); renderSlots(slots[firstFree]); } else { slotsH.textContent = loadErr.hidden ? S.noSlots : ''; slotsG.innerHTML = ''; } }
+      else renderSlots(slots[picked]);
+    }
 
-  const config: Record<string, string> = { layout: 'month_view', theme: 'light', 'metadata[langue]': el.dataset.lang!, 'metadata[source]': from || 'direct' };
-  if (demarche) config['votre-demarche'] = demarche;
+    function renderSlots(list: string[]) {
+      slotsH.textContent = fmtD.format(utc(picked));
+      slotsG.innerHTML = '';
+      if (!list.length) { slotsH.textContent += ' — ' + S.noSlots; return; }
+      list.forEach((iso) => {
+        const t = iso.slice(11, 16);
+        const b = document.createElement('button');
+        b.type = 'button'; b.textContent = hm(t);
+        b.addEventListener('click', () => {
+          slotIso = iso; slotLabel = `${fmtD.format(utc(picked))} ${S.at} ${hm(t)}`;
+          $('[data-chosen]').textContent = slotLabel;
+          pick.hidden = true; form.hidden = false; status.textContent = ''; status.dataset.state = '';
+          toTop(); form.querySelector<HTMLInputElement>('#b-first')!.focus({ preventScroll: true });
+        });
+        slotsG.append(b);
+      });
+    }
 
-  function start() {
-  w.Cal('init', 'rdv', { origin: 'https://app.cal.com' });
-  w.Cal.ns.rdv('inline', { elementOrSelector: '#cal-inline', calLink: el.dataset.cal, config });
-  w.Cal.ns.rdv('ui', {
-    theme: 'light',
-    hideEventTypeDetails: true,
-    layout: 'month_view',
-    cssVarsPerTheme: { light: { 'cal-brand': '#2f55d4' } },
-  });
+    $('[data-prev]').addEventListener('click', () => { if (--vm < 0) { vm = 11; vy--; } render(); });
+    $('[data-next]').addEventListener('click', () => { if (++vm > 11) { vm = 0; vy++; } render(); });
+    $('[data-change]').addEventListener('click', () => { form.hidden = true; pick.hidden = false; toTop(); });
+
+    // ---- démarche pré-remplie selon la page d'origine
+    const from = root.dataset.self ? location.pathname : (() => { try { return new URL(document.referrer).pathname; } catch { return ''; } })();
+    const dem =
+      /contestation-oqtf/.test(from) ? 'Contestation OQTF' :
+      /naturalisation/.test(from) ? 'Naturalisation' :
+      /titre-de-sejour/.test(from) ? 'Titre de séjour' :
+      /regroupement-familial/.test(from) ? 'Regroupement familial' : '';
+    if (dem) (form.elements.namedItem('demarche') as HTMLSelectElement).value = dem;
+
+    // ---- réservation
+    const t0 = Date.now();
+    const phoneEl = form.querySelector<HTMLInputElement>('#b-phone')!;
+    const e164 = (raw: string) => { let s = raw.replace(/[\s.\-()/]/g, ''); if (s.startsWith('00')) s = '+' + s.slice(2); else if (/^0\d{9}$/.test(s)) s = '+33' + s.slice(1); return /^\+[1-9]\d{7,14}$/.test(s) ? s : ''; };
+    phoneEl.addEventListener('input', () => phoneEl.setCustomValidity(''));
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      phoneEl.setCustomValidity(phoneEl.value && !e164(phoneEl.value) ? S.badPhone : '');
+      if (!form.reportValidity()) return;
+      const fd = new FormData(form);
+      const body = {
+        start: slotIso, lang, source: from || 'direct', elapsed: Math.round((Date.now() - t0) / 1000),
+        firstname: fd.get('firstname'), lastname: fd.get('lastname'), email: fd.get('email'), phone: fd.get('phone'),
+        demarche: fd.get('demarche'), mode: fd.get('mode'), message: fd.get('message'), website: fd.get('website'), consent: fd.get('consent') === '1',
+      };
+      btn.disabled = true; status.dataset.state = ''; status.textContent = S.sending;
+      try {
+        const r = await fetch('/api/book', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+        const j = await r.json().catch(() => ({}));
+        if (r.ok && j.ok) {
+          const tpl = body.mode === 'phone' ? S.donePhone : S.doneVideo;
+          $('[data-done]').textContent = tpl.replace('{d}', slotLabel).replace('{e}', String(body.email)).replace('{p}', e164(String(body.phone)));
+          form.hidden = true; done.hidden = false; done.focus({ preventScroll: true }); toTop();
+          return;
+        }
+        if (j.error === 'phone') { phoneEl.setCustomValidity(S.badPhone); phoneEl.reportValidity(); status.textContent = ''; return; }
+        if (j.error === 'taken') {
+          cache.clear(); form.hidden = true; pick.hidden = false; toTop(); await render();
+          slotsH.textContent = S.taken; return;
+        }
+        throw new Error();
+      } catch {
+        status.dataset.state = 'err'; status.textContent = S.err;
+      } finally { btn.disabled = false; }
+    });
+
+    // ---- démarrage (différé sur l'accueil)
+    if (root.dataset.lazy && 'IntersectionObserver' in window) {
+      const io = new IntersectionObserver((en) => { if (en.some((x) => x.isIntersecting)) { io.disconnect(); render(); } }, { rootMargin: '600px 0px' });
+      io.observe(root);
+    } else render();
   }
-  // chargement différé : le script Cal.com n'est chargé qu'à l'approche du module
-  if (el.dataset.lazy && 'IntersectionObserver' in window) {
-    const io = new IntersectionObserver((e) => { if (e.some((x) => x.isIntersecting)) { io.disconnect(); start(); } }, { rootMargin: '600px 0px' });
-    io.observe(el);
-  } else start();
 </script>
 
 <style>
   .main { display: grid; gap: 1.25rem; min-width: 0; }
-  .box { background: #fff; border-radius: calc(var(--radius) * 1.5); box-shadow: 0 4px 24px -4px rgba(41,73,138,.08); }
-  .cal-box { padding: clamp(.5rem, 1.5vw, 1rem); overflow: hidden; }
-  .cal { min-height: 520px; width: 100%; overflow: auto; }
-  .cal-loading { display: grid; place-items: center; min-height: 520px; color: var(--muted); font-size: .95rem; }
-  .cal:has(iframe, cal-inline) .cal-loading { display: none; }
-  .cal-alt { text-align: right; font-size: .82rem; padding: .25rem .75rem .5rem; }
-  .cal-alt a { color: var(--muted); }
-  .cal-alt a:hover { color: var(--brand-2); }
-  .callback { max-width: 100%; background: #fff; border-radius: calc(var(--radius) * 1.5); padding: 0 clamp(1.5rem, 4vw, 3rem); box-shadow: 0 4px 24px -4px rgba(41,73,138,.08); }
+  .box { scroll-margin-top: 6.5rem; background: #fff; border-radius: calc(var(--radius) * 1.5); box-shadow: 0 4px 24px -4px rgba(41,73,138,.08); padding: clamp(1.25rem, 4vw, 3rem); }
+
+  /* 1. calendrier */
+  .pick { border: 0; padding: 0; margin: 0; min-width: 0; display: grid; grid-template-columns: 1.35fr 1fr; gap: clamp(1.5rem, 4vw, 3.5rem); }
+  .pick[hidden] { display: none; }
+  .cal { display: grid; gap: 1rem; align-content: start; }
+  .cal-h { display: flex; justify-content: space-between; align-items: center; }
+  .month { font-size: 1.3rem; color: var(--ink); font-weight: 500; text-transform: capitalize; }
+  .month :global(span) { color: var(--muted); font-weight: 350; }
+  .nav { display: flex; gap: .25rem; }
+  .nav button { width: 2.4rem; height: 2.4rem; border: 0; background: none; font-size: 1.5rem; color: var(--muted); cursor: pointer; border-radius: 50%; }
+  .nav button:hover:not(:disabled) { background: var(--soft); color: var(--ink); }
+  .nav button:disabled { opacity: .25; cursor: default; }
+  .dow, .days { display: grid; grid-template-columns: repeat(7, 1fr); gap: .4rem; text-align: center; }
+  .dow { font-size: .72rem; letter-spacing: .1em; color: var(--muted); padding: .75rem 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); text-transform: uppercase; }
+  .days { min-height: 15rem; align-content: start; transition: opacity .2s; }
+  .days[aria-busy='true'] { opacity: .35; }
+  .days :global(button) { aspect-ratio: 1.15; border: 0; border-radius: .5rem; background: var(--soft); color: var(--ink); cursor: pointer; font-size: 1rem; font-weight: 500; transition: background .15s, color .15s; position: relative; }
+  .days :global(button:hover:not(:disabled)) { background: #dfe8fb; }
+  .days :global(button:disabled) { background: none; color: #b6bcc8; cursor: default; font-weight: 400; }
+  .days :global(button.today::after) { content: ''; position: absolute; left: 50%; bottom: 18%; width: 4px; height: 4px; margin-left: -2px; border-radius: 50%; background: currentColor; }
+  .days :global(button[aria-pressed='true']) { background: var(--brand-2); color: #fff; }
+
+  .slots { display: grid; gap: .75rem; align-content: start; }
+  .slots-h { font-size: .95rem; color: var(--ink); min-height: 2.4rem; display: flex; align-items: center; }
+  .slots-h::first-letter { text-transform: uppercase; }
+  .slots-g { display: grid; grid-template-columns: repeat(auto-fill, minmax(5.5rem, 1fr)); gap: .5rem; max-height: 22rem; overflow: auto; padding: 2px; }
+  .slots-g :global(button) { padding: .75rem 0; border: 1px solid var(--line); border-radius: .5rem; background: #fff; cursor: pointer; font-size: .95rem; color: var(--ink); transition: border-color .15s, color .15s, background .15s; }
+  .slots-g :global(button:hover) { border-color: var(--brand-2); color: var(--brand-2); }
+  .tz { font-size: .8rem; color: var(--muted); }
+  .load-err { margin-top: 1rem; color: var(--muted); font-size: .95rem; }
+
+  /* 2. formulaire */
+  .bk-form { display: grid; gap: 1.25rem; }
+  .bk-form[hidden], .done[hidden] { display: none; }
+  .chosen { display: flex; justify-content: space-between; align-items: center; gap: 1rem; flex-wrap: wrap; padding: 1rem 1.25rem; background: var(--soft); border-radius: .75rem; }
+  .chosen-l { color: var(--muted); font-size: .88rem; margin-right: .4rem; }
+  .chosen strong { font-weight: 500; color: var(--ink); }
+  .chosen strong::first-letter { text-transform: uppercase; }
+  .link { border: 0; background: none; color: var(--brand-2); cursor: pointer; font: inherit; font-size: .9rem; text-decoration: underline; padding: 0; }
+  .row { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; }
+  .hint { font-size: .78rem; color: var(--muted); }
+  .opt { color: var(--muted); font-weight: 350; }
+  .mode { border: 0; padding: 0; margin: 0; display: grid; gap: .5rem; align-content: start; }
+  .mode legend { font-size: .88rem; color: var(--ink); font-weight: 450; padding: 0; margin-bottom: .45rem; }
+  .mode label { display: flex; align-items: center; gap: .6rem; font-size: .95rem; font-weight: 400; cursor: pointer; }
+  .mode input { accent-color: var(--brand); width: 1.05rem; height: 1.05rem; }
+  .submit { display: flex; align-items: center; gap: 1.25rem; flex-wrap: wrap; margin-top: .25rem; }
+
+  /* 3. confirmation */
+  .done { display: grid; justify-items: center; text-align: center; gap: 1rem; padding: clamp(2rem, 6vw, 4rem) 0; outline: none; }
+  .done svg { width: 3.5rem; height: 3.5rem; fill: none; stroke: var(--brand-2); stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+  .done h3 { font-size: clamp(1.6rem, 3vw, 2.2rem); }
+  .done p { color: var(--muted); max-width: 46ch; }
+
+  /* repli : rappel */
+  .callback { background: #fff; border-radius: calc(var(--radius) * 1.5); padding: 0 clamp(1.5rem, 4vw, 3rem); box-shadow: 0 4px 24px -4px rgba(41,73,138,.08); }
   .callback summary { list-style: none; cursor: pointer; display: flex; justify-content: space-between; align-items: center; padding: 1.4rem 0; font-size: 1.1rem; color: var(--ink); font-weight: 500; }
   .callback summary::-webkit-details-marker { display: none; }
   .callback summary::after { content: '+'; font-weight: 300; font-size: 1.6rem; line-height: 1; color: var(--brand); transition: transform .25s; }
   .callback[open] summary::after { transform: rotate(45deg); }
   .callback[open] { padding-bottom: clamp(1.5rem, 4vw, 3rem); }
   .cb-lead { color: var(--muted); margin: -.25rem 0 1.5rem; }
-  @media (max-width: 900px) { .cal, .cal-loading { min-height: 640px; } }
+
+  @media (max-width: 860px) {
+    .pick { grid-template-columns: 1fr; }
+    .slots-g { max-height: none; }
+  }
+  @media (max-width: 560px) { .row { grid-template-columns: 1fr; } }
 </style>
