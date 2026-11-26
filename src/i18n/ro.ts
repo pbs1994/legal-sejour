@@ -170,17 +170,17 @@ const d: typeof fr = {
     steps: {
       eyebrow: 'Cum lucrăm', title: 'Patru pași. Un singur om de contact.',
       items: [
-        { t: 'Prima întâlnire, gratuită', d: '20 de minute ca să înțelegem situația și să vă spunem ce e de făcut.' },
+        { t: 'Prima întâlnire, gratuită', d: '30 de minute ca să înțelegem situația și să vă spunem ce e de făcut.' },
         { t: 'Dosarul', d: 'Ce adunați, ce verificăm, cum îl prezentăm.' },
         { t: 'Depunere și urmărire', d: 'Online sau la prefectură, cu reveniri și acte suplimentare.' },
         { t: 'Decizia', d: 'Rămânem alături de dumneavoastră până vine răspunsul.' },
       ],
     },
     faq: { eyebrow: 'Întrebări', title: 'Ce ne întrebați des' },
-    cta: { title: 'Povestiți-ne situația dumneavoastră.', text: 'Prima întâlnire durează 20 de minute, e gratuită și nu vă obligă la nimic.', btn: 'Programare' },
+    cta: { title: 'Povestiți-ne situația dumneavoastră.', text: 'Prima întâlnire durează 30 de minute, e gratuită și nu vă obligă la nimic.', btn: 'Programare' },
     formSection: {
       eyebrow: 'Contact', eyebrowOqtf: 'OQTF — urgent', title: 'Povestiți-ne situația dumneavoastră.',
-      ticks: ['Prima întâlnire gratuită, 20 de minute', 'La telefon sau pe video', 'Un preț clar înainte să vă hotărâți'],
+      ticks: ['Prima întâlnire gratuită, 30 de minute', 'La telefon sau pe video', 'Un preț clar înainte să vă hotărâți'],
       ticksOqtf: ['Vă sunăm primii', 'Contestația, redactată și depusă la timp', 'Un preț clar înainte să vă hotărâți'],
       call: 'Sau sunați-ne:', callOqtf: 'E urgent? Sunați acum:',
     },
@@ -236,7 +236,7 @@ const d: typeof fr = {
       ],
       faq: [
         { q: 'Sunteți avocați?', a: 'Nu. Légal Séjour este un serviciu privat de asistență administrativă. Redactăm contestații, pregătim dosare și rămânem alături de dumneavoastră până la decizie.' },
-        { q: 'Prima întâlnire e chiar gratuită?', a: 'Da. 20 de minute la telefon sau pe video: înțelegem situația și vă spunem cum să procedați. Fără nicio obligație.' },
+        { q: 'Prima întâlnire e chiar gratuită?', a: 'Da. 30 de minute la telefon sau pe video: înțelegem situația și vă spunem cum să procedați. Fără nicio obligație.' },
         { q: 'Cât costă?', a: 'Depinde de situație. După prima întâlnire primiți un preț clar — înainte să vă hotărâți.' },
         { q: 'Am primit o OQTF. Ce fac?', a: 'Contactați-ne imediat. Redactăm contestația și o depunem în termen — care poate fi de doar 24 de ore.' },
       ],
@@ -285,12 +285,12 @@ const d: typeof fr = {
     },
     booking: {
       title: 'Programare — prima întâlnire e gratuită',
-      desc: 'Faceți o programare gratuită de 20 de minute cu un consilier, la telefon sau pe video.',
+      desc: 'Faceți o programare gratuită de 30 de minute cu un consilier, la telefon sau pe video.',
       h1: 'Prima întâlnire e', h1Script: 'gratuită', lead: 'cu un consilier Légal Séjour.',
-      meta: ['20 de minute', 'La telefon sau pe video', 'Ora Parisului'],
-      small: 'Vă confirmăm ora prin e-mail sau la telefon.',
-      legend: 'Alegeți data și ora', prev: 'Luna anterioară', next: 'Luna următoare',
-      phone: 'Telefon', video: 'Video', at: 'la ora',
+      meta: ['30 de minute', 'La telefon sau pe video', 'Ora Parisului'],
+      small: 'Primiți imediat pe e-mail confirmarea și linkul întâlnirii.',
+      loading: 'Se încarcă calendarul…', open: 'Deschideți calendarul într-o filă nouă',
+      callback: 'Preferați să vă sunăm noi?', callbackLead: 'Lăsați-ne datele de contact și vă sunăm ca să stabilim ora.',
     },
   },
 };

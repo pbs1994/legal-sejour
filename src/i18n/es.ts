@@ -170,17 +170,17 @@ const d: typeof fr = {
     steps: {
       eyebrow: 'Cómo trabajamos', title: 'Cuatro pasos. Una sola persona de contacto.',
       items: [
-        { t: 'Primera cita gratis', d: '20 minutos para entender su caso y decirle qué hacer.' },
+        { t: 'Primera cita gratis', d: '30 minutos para entender su caso y decirle qué hacer.' },
         { t: 'El expediente', d: 'Qué reunir, qué revisar y cómo presentarlo.' },
         { t: 'Presentación y seguimiento', d: 'En línea o en la prefectura, con recordatorios y documentación adicional.' },
         { t: 'La resolución', d: 'Seguimos a su lado hasta que llegue la respuesta.' },
       ],
     },
     faq: { eyebrow: 'Preguntas', title: 'Lo que más nos preguntan' },
-    cta: { title: 'Cuéntenos su caso.', text: 'La primera cita dura 20 minutos, es gratis y no le compromete a nada.', btn: 'Pedir cita' },
+    cta: { title: 'Cuéntenos su caso.', text: 'La primera cita dura 30 minutos, es gratis y no le compromete a nada.', btn: 'Pedir cita' },
     formSection: {
       eyebrow: 'Contacto', eyebrowOqtf: 'OQTF — urgente', title: 'Cuéntenos su caso.',
-      ticks: ['Primera cita gratis, 20 minutos', 'Por teléfono o videollamada', 'Precio claro antes de decidir'],
+      ticks: ['Primera cita gratis, 30 minutos', 'Por teléfono o videollamada', 'Precio claro antes de decidir'],
       ticksOqtf: ['Le llamamos los primeros', 'Recurso redactado y presentado a tiempo', 'Precio claro antes de decidir'],
       call: 'O llámenos:', callOqtf: '¿Es urgente? Llame ahora:',
     },
@@ -236,7 +236,7 @@ const d: typeof fr = {
       ],
       faq: [
         { q: '¿Son abogados?', a: 'No. Légal Séjour es un servicio privado de gestión administrativa. Redactamos recursos, preparamos expedientes y le acompañamos hasta la resolución.' },
-        { q: '¿La primera cita es gratis de verdad?', a: 'Sí. 20 minutos por teléfono o videollamada para entender su caso y proponerle cómo actuar. Sin ningún compromiso.' },
+        { q: '¿La primera cita es gratis de verdad?', a: 'Sí. 30 minutos por teléfono o videollamada para entender su caso y proponerle cómo actuar. Sin ningún compromiso.' },
         { q: '¿Cuánto cuesta?', a: 'Depende de su caso. Tras la primera cita recibe un precio claro, antes de decidir nada.' },
         { q: 'He recibido una OQTF. ¿Qué hago?', a: 'Contáctenos enseguida. Redactamos su recurso y lo presentamos dentro del plazo, que puede ser de solo 24 horas.' },
       ],
@@ -285,12 +285,12 @@ const d: typeof fr = {
     },
     booking: {
       title: 'Pedir cita — la primera es gratis',
-      desc: 'Reserve una cita gratuita de 20 minutos con un asesor, por teléfono o videollamada.',
+      desc: 'Reserve una cita gratuita de 30 minutos con un asesor, por teléfono o videollamada.',
       h1: 'La primera cita es', h1Script: 'gratis', lead: 'con un asesor de Légal Séjour.',
-      meta: ['20 minutos', 'Por teléfono o videollamada', 'Hora de París'],
-      small: 'Le confirmaremos la hora por correo o por teléfono.',
-      legend: 'Elija día y hora', prev: 'Mes anterior', next: 'Mes siguiente',
-      phone: 'Teléfono', video: 'Vídeo', at: 'a las',
+      meta: ['30 minutos', 'Por teléfono o videollamada', 'Hora de París'],
+      small: 'Recibirá al instante un correo de confirmación con el enlace de la cita.',
+      loading: 'Cargando el calendario…', open: 'Abrir el calendario en una pestaña nueva',
+      callback: '¿Prefiere que le llamemos?', callbackLead: 'Déjenos sus datos y le llamamos para fijar la hora.',
     },
   },
 };

@@ -3,156 +3,128 @@ import Base from '../layouts/Base.astro';
 import LeadForm from '../components/LeadForm.astro';
 import PhoneBtn from '../components/PhoneBtn.astro';
 import { getLang, t, lp } from '../i18n';
+import { SITE } from '../data/site';
 const lang = getLang(Astro.url);
 const T = t(lang);
 const B = T.booking;
+const calUrl = `https://cal.com/${SITE.cal}`;
 ---
 <Base title={B.title} description={B.desc}>
   <section class="section rdv">
     <div class="wrap grid">
-      <aside class="info">
-        <nav class="crumbs" aria-label={T.crumbs.aria}><a href={lp(lang, '/')}>{T.crumbs.home}</a><span aria-hidden="true">/</span><span>{T.crumbs.booking}</span></nav>
-        <h1><span set:html={B.h1} /> <em class="script">{B.h1Script}</em></h1>
-        <p class="lead">{B.lead}</p>
-        <ul class="meta">
-          <li><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>{B.meta[0]}</li>
-          <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7h12v10H3zM15 10l6-3v10l-6-3"/></svg>{B.meta[1]}</li>
-          <li><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18"/></svg>{B.meta[2]}</li>
-        </ul>
-        <p class="small">{B.small}</p>
-        <div><PhoneBtn /></div>
-      </aside>
+      <header class="info">
+        <div class="intro">
+          <nav class="crumbs" aria-label={T.crumbs.aria}><a href={lp(lang, '/')}>{T.crumbs.home}</a><span aria-hidden="true">/</span><span>{T.crumbs.booking}</span></nav>
+          <h1><span set:html={B.h1} /> <em class="script">{B.h1Script}</em></h1>
+          <p class="lead">{B.lead}</p>
+        </div>
+        <div class="facts">
+          <ul class="meta">
+            <li><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>{B.meta[0]}</li>
+            <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7h12v10H3zM15 10l6-3v10l-6-3"/></svg>{B.meta[1]}</li>
+            <li><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18"/></svg>{B.meta[2]}</li>
+          </ul>
+          <p class="small">{B.small}</p>
+          <div><PhoneBtn /></div>
+        </div>
+      </header>
 
-      <div class="box">
-        <LeadForm booking>
-          <fieldset slot="booking" class="pick" data-pick data-intl={T.meta.intl} data-at={B.at}>
-            <legend class="sr-only">{B.legend}</legend>
-            <div class="cal-h">
-              <p class="month" data-month></p>
-              <div class="nav">
-                <button type="button" data-prev aria-label={B.prev}>‹</button>
-                <button type="button" data-next aria-label={B.next}>›</button>
-              </div>
-            </div>
-            <div class="dow" aria-hidden="true" data-dow></div>
-            <div class="days" data-days></div>
-            <div class="slots" data-slots hidden>
-              <p class="slots-h" data-slots-h></p>
-              <div class="slots-g" data-slots-g></div>
-            </div>
-            <div class="mode">
-              <label><input type="radio" name="mode" value="Téléphone" checked /> <span>{B.phone}</span></label>
-              <label><input type="radio" name="mode" value="Visio" /> <span>{B.video}</span></label>
-            </div>
-            <input type="hidden" name="slot" data-slot />
-          </fieldset>
-        </LeadForm>
+      <div class="main">
+        <div class="box cal-box">
+          <div id="cal-inline" class="cal" data-cal={SITE.cal} data-lang={lang}>
+            <p class="cal-loading">{B.loading}</p>
+          </div>
+          <p class="cal-alt"><a href={calUrl} target="_blank" rel="noopener">{B.open} ↗</a></p>
+        </div>
+
+        <details class="callback">
+          <summary><span>{B.callback}</span></summary>
+          <p class="cb-lead">{B.callbackLead}</p>
+          <LeadForm />
+        </details>
       </div>
     </div>
   </section>
 </Base>
 
 <script>
-  const root = document.querySelector<HTMLElement>('[data-pick]')!;
-  const monthEl = root.querySelector<HTMLElement>('[data-month]')!;
-  const daysEl = root.querySelector<HTMLElement>('[data-days]')!;
-  const slotsBox = root.querySelector<HTMLElement>('[data-slots]')!;
-  const slotsH = root.querySelector<HTMLElement>('[data-slots-h]')!;
-  const slotsG = root.querySelector<HTMLElement>('[data-slots-g]')!;
-  const slotInput = root.querySelector<HTMLInputElement>('[data-slot]')!;
-  const today = new Date(); today.setHours(0, 0, 0, 0);
-  const max = new Date(today); max.setDate(max.getDate() + 60);
-  let view = new Date(today.getFullYear(), today.getMonth(), 1);
-  let picked: Date | null = null;
-  const loc = root.dataset.intl!;
-  const AT = root.dataset.at!;
-  const fmtM = new Intl.DateTimeFormat(loc, { month: 'long' });
-  const fmtD = new Intl.DateTimeFormat(loc, { weekday: 'long', day: 'numeric', month: 'long' });
-  const fmtW = new Intl.DateTimeFormat(loc, { weekday: 'short' });
-  // en-tête des jours, lundi → dimanche (2024-01-01 est un lundi)
-  root.querySelector<HTMLElement>('[data-dow]')!.innerHTML = Array.from({ length: 7 }, (_, i) => `<span>${fmtW.format(new Date(2024, 0, 1 + i)).toUpperCase()}</span>`).join('');
-  const TIMES = ['09:30', '10:00', '10:30', '11:00', '11:30', '14:00', '14:30', '15:00', '15:30', '16:00', '16:30', '17:00', '17:30', '18:00'];
+  // Cal.com : intégration officielle (embed.js), espace de noms « rdv »
+  type CalFn = ((...a: unknown[]) => void) & { loaded?: boolean; ns: Record<string, CalFn>; q: unknown[] };
+  const w = window as unknown as { Cal: CalFn };
+  (function (C: typeof w, A: string, L: string) {
+    const p = (a: CalFn, ar: unknown) => { a.q.push(ar); };
+    const d = document;
+    C.Cal = C.Cal || (function (...ar: unknown[]) {
+      const cal = C.Cal;
+      if (!cal.loaded) { cal.ns = {}; cal.q = cal.q || []; d.head.appendChild(d.createElement('script')).src = A; cal.loaded = true; }
+      if (ar[0] === L) {
+        const api = (function (...a: unknown[]) { p(api, a); }) as CalFn;
+        const namespace = ar[1];
+        api.q = api.q || [];
+        if (typeof namespace === 'string') { cal.ns[namespace] = cal.ns[namespace] || api; p(cal.ns[namespace], ar); p(cal, ['initNamespace', namespace]); } else p(cal, ar);
+        return;
+      }
+      p(cal, ar);
+    } as CalFn);
+  })(w, 'https://app.cal.com/embed/embed.js', 'init');
 
-  const open = (d: Date) => d > today && d <= max && d.getDay() !== 0 && d.getDay() !== 6;
+  const el = document.getElementById('cal-inline')!;
+  // Démarche pré-remplie selon la page d'où vient le visiteur
+  const from = (() => { try { return new URL(document.referrer).pathname; } catch { return ''; } })();
+  const demarche =
+    /contestation-oqtf/.test(from) ? 'Contestation OQTF' :
+    /naturalisation/.test(from) ? 'Naturalisation' :
+    /titre-de-sejour/.test(from) ? 'Titre de séjour' :
+    /regroupement-familial/.test(from) ? 'Regroupement familial' : '';
 
-  function render() {
-    monthEl.innerHTML = `${fmtM.format(view)} <span>${view.getFullYear()}</span>`;
-    daysEl.innerHTML = '';
-    const lead = (view.getDay() + 6) % 7;
-    for (let i = 0; i < lead; i++) daysEl.append(document.createElement('span'));
-    const n = new Date(view.getFullYear(), view.getMonth() + 1, 0).getDate();
-    for (let i = 1; i <= n; i++) {
-      const d = new Date(view.getFullYear(), view.getMonth(), i);
-      const b = document.createElement('button');
-      b.type = 'button'; b.textContent = String(i);
-      b.disabled = !open(d);
-      b.setAttribute('aria-label', fmtD.format(d));
-      if (picked && +picked === +d) b.setAttribute('aria-pressed', 'true');
-      b.addEventListener('click', () => { picked = d; slotInput.value = ''; render(); renderSlots(); });
-      daysEl.append(b);
-    }
-    (root.querySelector('[data-prev]') as HTMLButtonElement).disabled = view <= new Date(today.getFullYear(), today.getMonth(), 1);
-    (root.querySelector('[data-next]') as HTMLButtonElement).disabled = view >= new Date(max.getFullYear(), max.getMonth(), 1);
-  }
-  function renderSlots() {
-    if (!picked) return;
-    slotsBox.hidden = false;
-    slotsH.textContent = fmtD.format(picked);
-    slotsG.innerHTML = '';
-    const times = picked.getDay() === 5 ? TIMES.filter((t) => t < '17:00') : TIMES;
-    times.forEach((t) => {
-      const b = document.createElement('button');
-      b.type = 'button'; b.textContent = loc.startsWith('fr') ? t.replace(':', 'h') : t;
-      b.addEventListener('click', () => {
-        slotsG.querySelectorAll('button').forEach((x) => x.removeAttribute('aria-pressed'));
-        b.setAttribute('aria-pressed', 'true');
-        slotInput.value = `${fmtD.format(picked!)} ${AT} ${t}`;
-      });
-      slotsG.append(b);
-    });
-  }
-  root.querySelector('[data-prev]')!.addEventListener('click', () => { view = new Date(view.getFullYear(), view.getMonth() - 1, 1); render(); });
-  root.querySelector('[data-next]')!.addEventListener('click', () => { view = new Date(view.getFullYear(), view.getMonth() + 1, 1); render(); });
-  render();
+  const config: Record<string, string> = { layout: 'month_view', theme: 'light', 'metadata[langue]': el.dataset.lang!, 'metadata[source]': from || 'direct' };
+  if (demarche) config['votre-demarche'] = demarche;
+
+  w.Cal('init', 'rdv', { origin: 'https://app.cal.com' });
+  w.Cal.ns.rdv('inline', { elementOrSelector: '#cal-inline', calLink: el.dataset.cal, config });
+  w.Cal.ns.rdv('ui', {
+    theme: 'light',
+    hideEventTypeDetails: true,
+    layout: 'month_view',
+    cssVarsPerTheme: { light: { 'cal-brand': '#2f55d4' } },
+  });
 </script>
 
 <style>
   .rdv { background: var(--soft); }
-  .grid { display: grid; grid-template-columns: 1fr 1.35fr; gap: clamp(2.5rem, 6vw, 6rem); align-items: start; }
-  .info { display: grid; gap: 1.5rem; position: sticky; top: 7.5rem; }
-  .info .crumbs { margin-bottom: 0; }
+  .grid { display: grid; gap: clamp(2.5rem, 5vw, 4rem); }
+  .info { display: grid; grid-template-columns: 1.2fr 1fr; gap: clamp(2rem, 6vw, 6rem); align-items: end; }
+  .intro { display: grid; gap: 1.25rem; }
+  .intro .crumbs { margin-bottom: 0; }
+  .facts { display: grid; gap: 1.25rem; }
   h1 { font-size: clamp(2.4rem, 5vw, 4rem); }
-  h1 sup { font-size: .45em; }
+  h1 :global(sup) { font-size: .45em; }
   h1 em { font-style: normal; color: var(--brand-2); font-size: 1.15em; }
-  .meta { display: grid; gap: 1rem; padding: 1.75rem 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); color: var(--ink); }
+  .meta { display: grid; gap: 1rem; padding: 1.5rem 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); color: var(--ink); }
   .meta li { display: flex; align-items: center; gap: .9rem; }
   .meta svg { width: 1.3rem; height: 1.3rem; fill: none; stroke: var(--muted); stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
   .small { font-size: .88rem; color: var(--muted); }
-  .box { background: #fff; border-radius: calc(var(--radius) * 1.5); padding: clamp(1.5rem, 4vw, 3rem); box-shadow: 0 4px 24px -4px rgba(41,73,138,.08); }
 
-  .pick { border: 0; padding: 0 0 1.5rem; margin: 0 0 .5rem; border-bottom: 1px solid var(--line); display: grid; gap: 1rem; min-width: 0; }
-  .cal-h { display: flex; justify-content: space-between; align-items: center; }
-  .month { font-size: 1.3rem; color: var(--ink); font-weight: 500; text-transform: capitalize; }
-  .month :global(span) { color: var(--muted); font-weight: 350; }
-  .nav { display: flex; gap: .25rem; }
-  .nav button { width: 2.4rem; height: 2.4rem; border: 0; background: none; font-size: 1.5rem; color: var(--muted); cursor: pointer; border-radius: 50%; }
-  .nav button:hover:not(:disabled) { background: var(--soft); color: var(--ink); }
-  .nav button:disabled { opacity: .25; cursor: default; }
-  .dow, .days { display: grid; grid-template-columns: repeat(7, 1fr); gap: .4rem; text-align: center; }
-  .dow { font-size: .72rem; letter-spacing: .1em; color: var(--muted); padding: .75rem 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
-  .days :global(button) { aspect-ratio: 1.15; border: 0; border-radius: .5rem; background: var(--soft); color: var(--ink); cursor: pointer; font-size: 1rem; transition: background .15s, color .15s; }
-  .days :global(button:hover:not(:disabled)) { background: #dfe8fb; }
-  .days :global(button:disabled) { background: none; color: #b6bcc8; cursor: default; }
-  .days :global(button[aria-pressed='true']), .slots-g :global(button[aria-pressed='true']) { background: var(--brand-2); color: #fff; }
-  .slots-h { font-size: .95rem; color: var(--ink); text-transform: capitalize; margin: .5rem 0 .75rem; }
-  .slots-g { display: grid; grid-template-columns: repeat(auto-fill, minmax(5rem, 1fr)); gap: .5rem; }
-  .slots-g :global(button) { padding: .7rem 0; border: 1px solid var(--line); border-radius: .5rem; background: #fff; cursor: pointer; font-size: .95rem; }
-  .slots-g :global(button:hover) { border-color: var(--brand-2); color: var(--brand-2); }
-  .mode { display: flex; gap: .6rem; margin-top: .5rem; }
-  .mode label { cursor: pointer; }
-  .mode input { position: absolute; opacity: 0; }
-  .mode span { display: inline-block; padding: .55rem 1.1rem; border: 1px solid var(--line); border-radius: 999px; font-size: .92rem; }
-  .mode input:checked + span { border-color: var(--brand); color: var(--brand); background: var(--soft); }
-  .mode input:focus-visible + span { outline: 2px solid var(--brand-2); outline-offset: 2px; }
-  @media (max-width: 900px) { .grid { grid-template-columns: 1fr; } .info { position: static; } }
+  .main { display: grid; gap: 1.25rem; min-width: 0; }
+  .box { background: #fff; border-radius: calc(var(--radius) * 1.5); box-shadow: 0 4px 24px -4px rgba(41,73,138,.08); }
+  .cal-box { padding: clamp(.5rem, 1.5vw, 1rem); overflow: hidden; }
+  .cal { min-height: 520px; width: 100%; overflow: auto; }
+  .cal-loading { display: grid; place-items: center; min-height: 520px; color: var(--muted); font-size: .95rem; }
+  .cal:has(iframe, cal-inline) .cal-loading { display: none; }
+  .cal-alt { text-align: right; font-size: .82rem; padding: .25rem .75rem .5rem; }
+  .cal-alt a { color: var(--muted); }
+  .cal-alt a:hover { color: var(--brand-2); }
+
+  .callback { max-width: 100%; background: #fff; border-radius: calc(var(--radius) * 1.5); padding: 0 clamp(1.5rem, 4vw, 3rem); box-shadow: 0 4px 24px -4px rgba(41,73,138,.08); }
+  .callback summary { list-style: none; cursor: pointer; display: flex; justify-content: space-between; align-items: center; padding: 1.4rem 0; font-size: 1.1rem; color: var(--ink); font-weight: 500; }
+  .callback summary::-webkit-details-marker { display: none; }
+  .callback summary::after { content: '+'; font-weight: 300; font-size: 1.6rem; line-height: 1; color: var(--brand); transition: transform .25s; }
+  .callback[open] summary::after { transform: rotate(45deg); }
+  .callback[open] { padding-bottom: clamp(1.5rem, 4vw, 3rem); }
+  .cb-lead { color: var(--muted); margin: -.25rem 0 1.5rem; }
+
+  @media (max-width: 900px) {
+    .info { grid-template-columns: 1fr; align-items: start; }
+    .cal, .cal-loading { min-height: 640px; }
+  }
 </style>

@@ -180,17 +180,17 @@ const ui = {
   steps: {
     eyebrow: 'Processus', title: 'Quatre étapes, un seul interlocuteur.',
     items: [
-      { t: 'Premier rendez-vous gratuit', d: '20 minutes pour comprendre votre situation et vous orienter.' },
+      { t: 'Premier rendez-vous gratuit', d: '30 minutes pour comprendre votre situation et vous orienter.' },
       { t: 'Constitution du dossier', d: 'Liste des pièces, vérification, mise en forme.' },
       { t: 'Dépôt et suivi', d: 'Dépôt en ligne ou en préfecture, relances, compléments.' },
       { t: 'Décision', d: 'Nous restons à vos côtés jusqu’à la réponse de l’administration.' },
     ] as TD[],
   },
   faq: { eyebrow: 'FAQ', title: 'Questions fréquentes' },
-  cta: { title: 'Parlons de votre situation.', text: 'Premier rendez-vous de 20 minutes, gratuit et sans engagement.', btn: 'Prendre rendez-vous' },
+  cta: { title: 'Parlons de votre situation.', text: 'Premier rendez-vous de 30 minutes, gratuit et sans engagement.', btn: 'Prendre rendez-vous' },
   formSection: {
     eyebrow: 'Premier contact', eyebrowOqtf: 'Urgence OQTF', title: 'Parlons de votre situation.',
-    ticks: ['1<sup>er</sup> rendez-vous gratuit, 20 minutes', 'Par téléphone ou en visio', 'Devis clair avant tout engagement'],
+    ticks: ['1<sup>er</sup> rendez-vous gratuit, 30 minutes', 'Par téléphone ou en visio', 'Devis clair avant tout engagement'],
     ticksOqtf: ['Rappel prioritaire', 'Recours rédigé et déposé dans le délai', 'Devis clair avant tout engagement'],
     call: 'Ou appelez-nous :', callOqtf: 'Urgence ? Appelez directement :',
   },
@@ -246,7 +246,7 @@ const ui = {
     ] as TD[],
     faq: [
       { q: 'Êtes-vous un cabinet d’avocats ?', a: 'Non. Légal Séjour est un service privé d’accompagnement administratif. Nous rédigeons vos recours et dossiers et vous accompagnons jusqu’à la décision.' },
-      { q: 'Le premier rendez-vous est-il vraiment gratuit ?', a: 'Oui. 20 minutes, par téléphone ou en visio, pour comprendre votre situation et vous orienter. Sans engagement.' },
+      { q: 'Le premier rendez-vous est-il vraiment gratuit ?', a: 'Oui. 30 minutes, par téléphone ou en visio, pour comprendre votre situation et vous orienter. Sans engagement.' },
       { q: 'Combien coûte l’accompagnement ?', a: 'Chaque situation est différente. Vous recevez un devis clair après le premier rendez-vous, avant tout engagement.' },
       { q: 'J’ai reçu une OQTF, que faire ?', a: 'Contactez-nous immédiatement. Nous rédigeons votre recours et le déposons dans le délai, qui peut être de 24 heures seulement.' },
     ] as QA[],
@@ -295,12 +295,12 @@ const ui = {
   },
   booking: {
     title: 'Prendre rendez-vous — 1er RDV gratuit',
-    desc: 'Réservez votre premier rendez-vous gratuit de 20 minutes avec un référent, par téléphone ou en visio.',
+    desc: 'Réservez votre premier rendez-vous gratuit de 30 minutes avec un référent, par téléphone ou en visio.',
     h1: '1<sup>er</sup> rendez-vous', h1Script: 'gratuit', lead: 'avec un référent Légal Séjour.',
-    meta: ['20 minutes', 'Téléphone ou visio', 'Europe/Paris'],
-    small: 'Le créneau choisi est confirmé par e-mail ou par téléphone.',
-    legend: 'Choisissez une date et un horaire', prev: 'Mois précédent', next: 'Mois suivant',
-    phone: 'Téléphone', video: 'Visio', at: 'à',
+    meta: ['30 minutes', 'Téléphone ou visio', 'Europe/Paris'],
+    small: 'Confirmation immédiate par e-mail, avec le lien du rendez-vous.',
+    loading: 'Chargement du calendrier…', open: 'Ouvrir le calendrier dans un nouvel onglet',
+    callback: 'Vous préférez être rappelé ?', callbackLead: 'Laissez vos coordonnées, nous vous rappelons pour fixer un créneau.',
   },
 };
 

@@ -170,17 +170,17 @@ const d: typeof fr = {
     steps: {
       eyebrow: 'How it works', title: 'Four steps. One person to talk to.',
       items: [
-        { t: 'Free first appointment', d: '20 minutes to understand your situation and point you in the right direction.' },
+        { t: 'Free first appointment', d: '30 minutes to understand your situation and point you in the right direction.' },
         { t: 'Your file', d: 'What to gather, what to check, how to present it.' },
         { t: 'Submission and follow-up', d: 'Online or at the préfecture, with chasers and any extra documents.' },
         { t: 'The decision', d: 'We stay with you until the administration replies.' },
       ],
     },
     faq: { eyebrow: 'FAQ', title: 'Questions we often hear' },
-    cta: { title: 'Tell us about your situation.', text: 'Your first 20-minute appointment is free, with no obligation.', btn: 'Book an appointment' },
+    cta: { title: 'Tell us about your situation.', text: 'Your first 30-minute appointment is free, with no obligation.', btn: 'Book an appointment' },
     formSection: {
       eyebrow: 'Get in touch', eyebrowOqtf: 'OQTF — urgent', title: 'Tell us about your situation.',
-      ticks: ['Free 20-minute first appointment', 'By phone or video call', 'A clear quote before you commit'],
+      ticks: ['Free 30-minute first appointment', 'By phone or video call', 'A clear quote before you commit'],
       ticksOqtf: ['We call you back first', 'Appeal written and filed on time', 'A clear quote before you commit'],
       call: 'Or call us:', callOqtf: 'Urgent? Call us now:',
     },
@@ -236,7 +236,7 @@ const d: typeof fr = {
       ],
       faq: [
         { q: 'Are you lawyers?', a: 'No. Légal Séjour is a private administrative support service. We write your appeals, prepare your files and stay with you until the decision.' },
-        { q: 'Is the first appointment really free?', a: 'Yes. 20 minutes by phone or video to understand your situation and suggest the way forward. No obligation.' },
+        { q: 'Is the first appointment really free?', a: 'Yes. 30 minutes by phone or video to understand your situation and suggest the way forward. No obligation.' },
         { q: 'How much does it cost?', a: 'It depends on your situation. After the first appointment you get a clear quote — before you commit to anything.' },
         { q: 'I’ve received an OQTF. What now?', a: 'Contact us straight away. We write your appeal and file it within the deadline — which can be as short as 24 hours.' },
       ],
@@ -285,12 +285,12 @@ const d: typeof fr = {
     },
     booking: {
       title: 'Book a free first appointment',
-      desc: 'Book a free 20-minute appointment with an advisor, by phone or video call.',
+      desc: 'Book a free 30-minute appointment with an advisor, by phone or video call.',
       h1: 'Your first appointment is', h1Script: 'free', lead: 'with a Légal Séjour advisor.',
-      meta: ['20 minutes', 'Phone or video call', 'Paris time'],
-      small: 'We’ll confirm your slot by email or phone.',
-      legend: 'Pick a date and time', prev: 'Previous month', next: 'Next month',
-      phone: 'Phone', video: 'Video', at: 'at',
+      meta: ['30 minutes', 'Phone or video call', 'Paris time'],
+      small: 'You’ll get an instant email confirmation with the meeting link.',
+      loading: 'Loading the calendar…', open: 'Open the calendar in a new tab',
+      callback: 'Rather we called you?', callbackLead: 'Leave your details and we’ll call you back to find a time.',
     },
   },
 };
