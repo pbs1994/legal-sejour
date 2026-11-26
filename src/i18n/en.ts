@@ -190,7 +190,7 @@ const d: typeof fr = {
       consent: 'I agree to be contacted using the details above.', more: 'Learn more',
       submit: 'Send', submitOqtf: 'Call me back urgently', submitBooking: 'Request this appointment',
       sending: 'Sending…', ok: 'Thank you — we’ve received your request and will be in touch shortly.',
-      err: 'Something went wrong. Please email us at contact@legal-sejour.fr.', website: 'Website',
+      err: 'Something went wrong. Please email us at legal.sejour.france@gmail.com.', website: 'Website',
     },
     delays: {
       items: [

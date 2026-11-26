@@ -190,7 +190,7 @@ const d: typeof fr = {
       consent: 'Согласен(на), чтобы со мной связались по этим контактам.', more: 'Подробнее',
       submit: 'Отправить', submitOqtf: 'Перезвоните мне срочно', submitBooking: 'Записаться',
       sending: 'Отправляем…', ok: 'Спасибо! Заявка получена, мы скоро свяжемся с вами.',
-      err: 'Не получилось отправить. Напишите нам на contact@legal-sejour.fr.', website: 'Сайт',
+      err: 'Не получилось отправить. Напишите нам на legal.sejour.france@gmail.com.', website: 'Сайт',
     },
     delays: {
       items: [

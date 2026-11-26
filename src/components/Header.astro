@@ -223,4 +223,7 @@ const langs = LANGS.map((l) => ({ l, code: CODE[l], name: t(l).meta.name, href: 
     /* libellé trop long en russe/roumain : le CTA reste dans le hero et le menu mobile */
     :global(html[lang='ru']) .rdv, :global(html[lang='ro']) .rdv { display: none; }
   }
+  @media (max-width: 359px) {
+    .rdv { display: none; }
+  }
 </style>

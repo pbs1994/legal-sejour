@@ -2,14 +2,14 @@
 // Les fichiers préfixés par « _ » ne sont pas exposés comme fonctions par Vercel.
 //
 //   RESEND_API_KEY  clé API Resend
-//   LEAD_TO         destinataire(s), séparés par des virgules (défaut : contact@legal-sejour.fr)
+//   LEAD_TO         destinataire(s), séparés par des virgules (défaut : legal.sejour.france@gmail.com)
 //   LEAD_FROM       expéditeur (défaut : Légal Séjour <site@legal-sejour.fr>) ; le domaine doit être vérifié chez Resend
 
 /** @returns {Promise<boolean>} true si Resend a accepté l'e-mail */
 export async function sendMail({ subject, text, replyTo, urgent = false }) {
   const key = process.env.RESEND_API_KEY;
   if (!key) { console.error('RESEND_API_KEY manquante — demande conservée uniquement dans les logs'); return false; }
-  const to = (process.env.LEAD_TO || 'contact@legal-sejour.fr').split(',').map((s) => s.trim()).filter(Boolean);
+  const to = (process.env.LEAD_TO || 'legal.sejour.france@gmail.com').split(',').map((s) => s.trim()).filter(Boolean);
   const from = process.env.LEAD_FROM || 'Légal Séjour <site@legal-sejour.fr>';
   try {
     const r = await fetch('https://api.resend.com/emails', {

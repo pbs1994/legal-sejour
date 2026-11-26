@@ -29,4 +29,4 @@ FR (racine), EN `/en/`, RU `/ru/`, RO `/ro/`, ES `/es/`. Textes : `src/i18n/<lan
 - [ ] Vercel : importer le repo, ajouter le domaine legal-sejour.fr
 - [ ] Resend : vérifier le domaine legal-sejour.fr (DNS), puis variables Vercel `RESEND_API_KEY`, `LEAD_TO` (et `LEAD_FROM` si besoin)
 - [x] Réservation : calendrier du site (langue de la page) sur l'API publique Cal.com — créneaux lus côté navigateur, réservation via `api/book.js` (→ Google Agenda, confirmation Cal.com au client dans sa langue, e-mail interne via Resend). Lien Cal : `SITE.cal` / env `CAL_LINK`
-- [ ] Boîte e-mail contact@legal-sejour.fr à créer, ou mettre une autre adresse dans `LEAD_TO`
+- [x] E-mail : legal.sejour.france@gmail.com (affiché sur le site + destinataire par défaut des formulaires/RDV ; `LEAD_TO` pour en changer)

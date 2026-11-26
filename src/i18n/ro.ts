@@ -190,7 +190,7 @@ const d: typeof fr = {
       consent: 'Sunt de acord să fiu contactat(ă) la datele de mai sus.', more: 'Detalii',
       submit: 'Trimite', submitOqtf: 'Sunați-mă urgent', submitBooking: 'Fac programarea',
       sending: 'Se trimite…', ok: 'Mulțumim! Am primit cererea și vă contactăm în curând.',
-      err: 'Nu s-a putut trimite. Scrieți-ne la contact@legal-sejour.fr.', website: 'Site web',
+      err: 'Nu s-a putut trimite. Scrieți-ne la legal.sejour.france@gmail.com.', website: 'Site web',
     },
     delays: {
       items: [

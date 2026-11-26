@@ -200,7 +200,7 @@ const ui = {
     consent: 'J’accepte que mes données soient utilisées pour être recontacté(e).', more: 'En savoir plus',
     submit: 'Envoyer ma demande', submitOqtf: 'Être rappelé en priorité', submitBooking: 'Confirmer ma demande',
     sending: 'Envoi…', ok: 'Merci. Votre demande est bien reçue, nous vous recontactons rapidement.',
-    err: 'L’envoi a échoué. Écrivez-nous à contact@legal-sejour.fr.', website: 'Site web',
+    err: 'L’envoi a échoué. Écrivez-nous à legal.sejour.france@gmail.com.', website: 'Site web',
   },
   delays: {
     items: [

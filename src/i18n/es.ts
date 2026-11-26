@@ -190,7 +190,7 @@ const d: typeof fr = {
       consent: 'Acepto que me contacten con estos datos.', more: 'Más información',
       submit: 'Enviar', submitOqtf: 'Llámenme urgentemente', submitBooking: 'Pedir esta cita',
       sending: 'Enviando…', ok: '¡Gracias! Hemos recibido su solicitud y le contactaremos en breve.',
-      err: 'No se ha podido enviar. Escríbanos a contact@legal-sejour.fr.', website: 'Sitio web',
+      err: 'No se ha podido enviar. Escríbanos a legal.sejour.france@gmail.com.', website: 'Sitio web',
     },
     delays: {
       items: [

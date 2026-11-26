@@ -3,7 +3,7 @@ export const SITE = {
   name: 'Légal Séjour',
   url: 'https://legal-sejour.fr',
   phone: '07 52 28 26 76', // vide → bouton téléphone masqué
-  email: 'contact@legal-sejour.fr',
+  email: 'legal.sejour.france@gmail.com',
   // Cal.com : page de réservation (synchronisée avec Google Agenda)
   cal: 'legal-sejour/rendez-vous-gratuit-30min',
   // Mentions légales (source : synthèse Guichet unique, formalité J00304160591). Sans nom, à la demande du client.
