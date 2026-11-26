@@ -65,6 +65,7 @@ const selected = oqtf ? 'oqtf' : service;
         const r = await fetch(form.action, { method: 'POST', body: new FormData(form) });
         const j = await r.json().catch(() => ({ ok: false }));
         if (!r.ok || !j.ok) throw new Error();
+        const w = window as any; (w.dataLayer = w.dataLayer || []).push({ event: 'formulaire_envoye', demarche: String(new FormData(form).get('service') || ''), lang: document.documentElement.lang });
         status.dataset.state = 'ok';
         status.textContent = form.dataset.ok!;
         form.reset();

@@ -241,6 +241,7 @@ const strings = {
         if (r.ok && j.ok) {
           const tpl = body.mode === 'phone' ? S.donePhone : S.doneVideo;
           $('[data-done]').textContent = tpl.replace('{d}', slotLabel).replace('{e}', String(body.email)).replace('{p}', e164(String(body.phone)));
+          const w = window as any; (w.dataLayer = w.dataLayer || []).push({ event: 'rdv_reserve', demarche: body.demarche, rdv_mode: body.mode, lang });
           form.hidden = true; done.hidden = false; done.focus({ preventScroll: true }); toTop();
           return;
         }
