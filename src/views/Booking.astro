@@ -1,13 +1,11 @@
 ---
 import Base from '../layouts/Base.astro';
-import LeadForm from '../components/LeadForm.astro';
+import CalBooking from '../components/CalBooking.astro';
 import PhoneBtn from '../components/PhoneBtn.astro';
 import { getLang, t, lp } from '../i18n';
-import { SITE } from '../data/site';
 const lang = getLang(Astro.url);
 const T = t(lang);
 const B = T.booking;
-const calUrl = `https://cal.com/${SITE.cal}`;
 ---
 <Base title={B.title} description={B.desc}>
   <section class="section rdv">
@@ -29,66 +27,11 @@ const calUrl = `https://cal.com/${SITE.cal}`;
         </div>
       </header>
 
-      <div class="main">
-        <div class="box cal-box">
-          <div id="cal-inline" class="cal" data-cal={SITE.cal} data-lang={lang}>
-            <p class="cal-loading">{B.loading}</p>
-          </div>
-          <p class="cal-alt"><a href={calUrl} target="_blank" rel="noopener">{B.open} ↗</a></p>
-        </div>
-
-        <details class="callback">
-          <summary><span>{B.callback}</span></summary>
-          <p class="cb-lead">{B.callbackLead}</p>
-          <LeadForm />
-        </details>
-      </div>
+      <CalBooking />
     </div>
   </section>
 </Base>
 
-<script>
-  // Cal.com : intégration officielle (embed.js), espace de noms « rdv »
-  type CalFn = ((...a: unknown[]) => void) & { loaded?: boolean; ns: Record<string, CalFn>; q: unknown[] };
-  const w = window as unknown as { Cal: CalFn };
-  (function (C: typeof w, A: string, L: string) {
-    const p = (a: CalFn, ar: unknown) => { a.q.push(ar); };
-    const d = document;
-    C.Cal = C.Cal || (function (...ar: unknown[]) {
-      const cal = C.Cal;
-      if (!cal.loaded) { cal.ns = {}; cal.q = cal.q || []; d.head.appendChild(d.createElement('script')).src = A; cal.loaded = true; }
-      if (ar[0] === L) {
-        const api = (function (...a: unknown[]) { p(api, a); }) as CalFn;
-        const namespace = ar[1];
-        api.q = api.q || [];
-        if (typeof namespace === 'string') { cal.ns[namespace] = cal.ns[namespace] || api; p(cal.ns[namespace], ar); p(cal, ['initNamespace', namespace]); } else p(cal, ar);
-        return;
-      }
-      p(cal, ar);
-    } as CalFn);
-  })(w, 'https://app.cal.com/embed/embed.js', 'init');
-
-  const el = document.getElementById('cal-inline')!;
-  // Démarche pré-remplie selon la page d'où vient le visiteur
-  const from = (() => { try { return new URL(document.referrer).pathname; } catch { return ''; } })();
-  const demarche =
-    /contestation-oqtf/.test(from) ? 'Contestation OQTF' :
-    /naturalisation/.test(from) ? 'Naturalisation' :
-    /titre-de-sejour/.test(from) ? 'Titre de séjour' :
-    /regroupement-familial/.test(from) ? 'Regroupement familial' : '';
-
-  const config: Record<string, string> = { layout: 'month_view', theme: 'light', 'metadata[langue]': el.dataset.lang!, 'metadata[source]': from || 'direct' };
-  if (demarche) config['votre-demarche'] = demarche;
-
-  w.Cal('init', 'rdv', { origin: 'https://app.cal.com' });
-  w.Cal.ns.rdv('inline', { elementOrSelector: '#cal-inline', calLink: el.dataset.cal, config });
-  w.Cal.ns.rdv('ui', {
-    theme: 'light',
-    hideEventTypeDetails: true,
-    layout: 'month_view',
-    cssVarsPerTheme: { light: { 'cal-brand': '#2f55d4' } },
-  });
-</script>
 
 <style>
   .rdv { background: var(--soft); }
@@ -105,26 +48,7 @@ const calUrl = `https://cal.com/${SITE.cal}`;
   .meta svg { width: 1.3rem; height: 1.3rem; fill: none; stroke: var(--muted); stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
   .small { font-size: .88rem; color: var(--muted); }
 
-  .main { display: grid; gap: 1.25rem; min-width: 0; }
-  .box { background: #fff; border-radius: calc(var(--radius) * 1.5); box-shadow: 0 4px 24px -4px rgba(41,73,138,.08); }
-  .cal-box { padding: clamp(.5rem, 1.5vw, 1rem); overflow: hidden; }
-  .cal { min-height: 520px; width: 100%; overflow: auto; }
-  .cal-loading { display: grid; place-items: center; min-height: 520px; color: var(--muted); font-size: .95rem; }
-  .cal:has(iframe, cal-inline) .cal-loading { display: none; }
-  .cal-alt { text-align: right; font-size: .82rem; padding: .25rem .75rem .5rem; }
-  .cal-alt a { color: var(--muted); }
-  .cal-alt a:hover { color: var(--brand-2); }
-
-  .callback { max-width: 100%; background: #fff; border-radius: calc(var(--radius) * 1.5); padding: 0 clamp(1.5rem, 4vw, 3rem); box-shadow: 0 4px 24px -4px rgba(41,73,138,.08); }
-  .callback summary { list-style: none; cursor: pointer; display: flex; justify-content: space-between; align-items: center; padding: 1.4rem 0; font-size: 1.1rem; color: var(--ink); font-weight: 500; }
-  .callback summary::-webkit-details-marker { display: none; }
-  .callback summary::after { content: '+'; font-weight: 300; font-size: 1.6rem; line-height: 1; color: var(--brand); transition: transform .25s; }
-  .callback[open] summary::after { transform: rotate(45deg); }
-  .callback[open] { padding-bottom: clamp(1.5rem, 4vw, 3rem); }
-  .cb-lead { color: var(--muted); margin: -.25rem 0 1.5rem; }
-
   @media (max-width: 900px) {
     .info { grid-template-columns: 1fr; align-items: start; }
-    .cal, .cal-loading { min-height: 640px; }
   }
 </style>

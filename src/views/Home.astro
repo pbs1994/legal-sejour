@@ -2,7 +2,7 @@
 import Base from '../layouts/Base.astro';
 import Steps from '../components/Steps.astro';
 import Faq from '../components/Faq.astro';
-import FormSection from '../components/FormSection.astro';
+import CalBooking from '../components/CalBooking.astro';
 import Delays from '../components/Delays.astro';
 import PhoneBtn from '../components/PhoneBtn.astro';
 import { OQTF_PATH } from '../data/services';
@@ -10,6 +10,7 @@ import { getLang, t, lp } from '../i18n';
 const lang = getLang(Astro.url);
 const T = t(lang);
 const H = T.home;
+const FS = T.formSection;
 const oqtf = lp(lang, OQTF_PATH);
 const chipHrefs = [OQTF_PATH, '/services/titre-de-sejour/', '/services/titre-de-sejour/renouvellement/', '/services/naturalisation/', '/services/visa/', '/services/regroupement-familial/', '/services/dalo/', '/services/dcem/'];
 const chips = H.chips.map((l, i) => ({ l, h: lp(lang, chipHrefs[i]), u: i === 0 }));
@@ -100,10 +101,32 @@ const rows = H.rows.map((r, i) => ({ ...r, h: lp(lang, rowHrefs[i]), u: i === 0 
   </section>
 
   <Faq items={H.faq} />
-  <FormSection />
+  <section class="section section--soft" id="rendez-vous">
+    <div class="wrap book">
+      <div class="book-h reveal">
+        <div class="book-t">
+          <span class="eyebrow">{FS.eyebrow}</span>
+          <h2>{FS.title}</h2>
+        </div>
+        <div class="book-f">
+          <ul class="ticks">
+            {FS.ticks.map((x) => <li><span set:html={x} /></li>)}
+          </ul>
+          <div class="call"><p class="muted">{FS.call}</p><PhoneBtn variant="ghost" /></div>
+        </div>
+      </div>
+      <CalBooking lazy self />
+    </div>
+  </section>
 </Base>
 
 <style>
+  .book { display: grid; gap: clamp(2.5rem, 5vw, 4rem); }
+  .book-h { display: grid; grid-template-columns: 1.2fr 1fr; gap: clamp(2rem, 6vw, 6rem); align-items: end; }
+  .book-t { display: grid; gap: 1.25rem; }
+  .book-f { display: grid; gap: 1.5rem; }
+  .book-f .call { display: flex; flex-wrap: wrap; align-items: center; gap: .75rem 1.25rem; padding-top: 1.5rem; border-top: 1px solid var(--line); }
+  @media (max-width: 900px) { .book-h { grid-template-columns: 1fr; align-items: start; } }
   .hero { padding: clamp(4rem, 10vw, 8.5rem) 0 clamp(4rem, 8vw, 7rem); }
   .hero-in { display: grid; grid-template-columns: 1.55fr 1fr; gap: clamp(2.5rem, 6vw, 6rem); align-items: end; }
   .hero-txt { display: grid; gap: 2rem; }
