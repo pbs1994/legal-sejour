@@ -116,7 +116,13 @@ const langs = LANGS.map((l) => ({ l, code: CODE[l], name: t(l).meta.name, href: 
   const lw = hdr.querySelector<HTMLElement>('[data-lang]')!;
   const lb = lw.querySelector<HTMLButtonElement>('.lang-btn')!;
   const ll = lw.querySelector<HTMLElement>('.lang-list')!;
-  const setL = (open: boolean) => { ll.hidden = !open; lb.setAttribute('aria-expanded', String(open)); };
+  const setL = (open: boolean) => {
+    ll.hidden = !open; lb.setAttribute('aria-expanded', String(open));
+    if (!open) return;
+    // aligné à droite du bouton ; bascule à gauche s'il déborde de l'écran
+    ll.style.left = ''; ll.style.right = '';
+    if (ll.getBoundingClientRect().left < 8) { ll.style.left = '0'; ll.style.right = 'auto'; }
+  };
   lb.addEventListener('click', () => setL(ll.hidden === true));
 
   document.addEventListener('keydown', (e) => { if (e.key === 'Escape') { set(false); setM(false); setL(false); } });
@@ -127,7 +133,7 @@ const langs = LANGS.map((l) => ({ l, code: CODE[l], name: t(l).meta.name, href: 
 
   const burger = hdr.querySelector<HTMLButtonElement>('[data-burger]')!;
   const mnav = hdr.querySelector<HTMLElement>('.mnav')!;
-  const setM = (open: boolean) => { mnav.hidden = !open; burger.setAttribute('aria-expanded', String(open)); document.body.style.overflow = open ? 'hidden' : ''; hdr.classList.toggle('m-open', open); };
+  const setM = (open: boolean) => { setL(false); mnav.hidden = !open; burger.setAttribute('aria-expanded', String(open)); document.body.style.overflow = open ? 'hidden' : ''; hdr.classList.toggle('m-open', open); };
   burger.addEventListener('click', () => setM(mnav.hidden === true));
 
   const onScroll = () => hdr.classList.toggle('scrolled', scrollY > 8);
@@ -210,18 +216,36 @@ const langs = LANGS.map((l) => ({ l, code: CODE[l], name: t(l).meta.name, href: 
   .m-langs { display: flex; flex-wrap: wrap; gap: .5rem; margin-bottom: 1.25rem; }
   .m-langs a { display: inline-flex; align-items: center; gap: .45rem; padding: .5rem .75rem; border: 1px solid var(--line); border-radius: 999px; font-size: .85rem; font-weight: 500; letter-spacing: .06em; }
   .m-langs a[aria-current] { border-color: var(--brand); color: var(--brand); background: var(--soft); }
-  @media (max-width: 1080px) { .lang { display: none; } }
   @media (max-width: 1080px) {
     .nav { display: none; }
     .burger { display: block; }
   }
-  @media (max-width: 520px) {
+  @media (max-width: 640px) {
     .bar { gap: .75rem; }
     .rdv { padding: .4rem .5rem; font-size: .95rem; }
     .rdv em { font-size: 1.35rem; }
     .ico { padding: 0; width: 2.6rem; min-width: 2.6rem; height: 2.6rem; } .num { display: none; }
+    .lang-btn { height: 2.6rem; padding: 0 .6rem; gap: .35rem; font-size: .78rem; }
+    .lang-btn svg { display: none; }
     /* libellé trop long en russe/roumain : le CTA reste dans le hero et le menu mobile */
     :global(html[lang='ru']) .rdv, :global(html[lang='ro']) .rdv { display: none; }
+  }
+  /* téléphone sans numéro dès que la place manque (le sélecteur de langue reste visible) */
+  @media (min-width: 641px) and (max-width: 860px) { .ico { padding: 0; width: 2.9rem; } .num { display: none; } }
+  @media (min-width: 641px) and (max-width: 680px) { :global(html[lang='ru']) .rdv { display: none; } }
+  @media (max-width: 520px) { :global(html[lang='en']) .rdv { display: none; } }
+  /* petits écrans : drapeau seul (le code est dans la liste), espacements resserrés */
+  @media (max-width: 500px) {
+    .bar { gap: .5rem; }
+    .cta { gap: .4rem; }
+    .lang-btn { width: 2.6rem; padding: 0; justify-content: center; }
+    .lang-btn span { display: none; }
+    .rdv { padding: .3rem .25rem; font-size: .9rem; gap: .3rem; }
+    .rdv em { font-size: 1.2rem; }
+  }
+  @media (max-width: 379px) {
+    .cta { gap: .25rem; }
+    .bar :global(.logo) { font-size: 1.45rem; }
   }
   @media (max-width: 359px) {
     .rdv { display: none; }
